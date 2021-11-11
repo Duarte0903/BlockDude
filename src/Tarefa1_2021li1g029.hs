@@ -11,7 +11,7 @@ module Tarefa1_2021li1g029 where
 import LI12122
 
 validaPotencialMapa :: [(Peca, Coordenadas)] -> Bool
-validaPotencialMapa pecas = undefined
+validaPotencialMapa pecas = undefined 
 
 -- determinha o n de elemetos iguais (t1 p2)
 elemiguais :: Peca -> [Peca] -> Int
@@ -33,13 +33,24 @@ ebloco (x,_) | x == Bloco = True
 
 -- verifica se a caixa flutua (t1 p3)
 caixaflutua :: [(Peca,Coordenadas)] -> Bool
-caixaflutua [] = False
+caixaflutua ((p,(x,y)):xs) = 
+      if ecaixa (p,(x,y-1)) || ebloco (p,(x,y-1)) then caixaflutua xs
+      else False 
 
-{-}
+espacovazio :: [(Peca,Coordenadas)] -> Int 
+espacovazio [] = 0
+espacovazio (x:xs) = 
+      if fst x == Vazio then 1 + espacovazio xs 
+      else espacovazio xs
+
+chao :: [(Peca,Coordenadas)] -> Bool 
+chao [] = False
+chao ((p,(a,b)):xs) = 
+      if p == Bloco && b == 0 && a >= 0 then chao xs
+      else False 
+ 
+{-
 validaPotencialMapa' :: [(Peca, Coordenadas)] -> Bool
 validaPotencialMapa' [] = False 
-validaPotencialMapa'  (x:xs) | snd x == snd (head xs) = False
-                            | (elemiguais n (x:xs)) > 1 = False
-                                                -}
-                                                    
-
+validaPotencialMapa' (x:xs) | snd x /= snd (head xs) && (elemiguais x (x:xs)) == 1 && caixaflutua (x:xs) &&  espacovazio (x:xs) >= 1 && chao (x:xs)  
+                            | otherwise = False -}
