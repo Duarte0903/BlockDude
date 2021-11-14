@@ -13,12 +13,12 @@ import LI12122
 validaPotencialMapa :: [(Peca, Coordenadas)] -> Bool
 validaPotencialMapa pecas = undefined 
 
--- determinha o n de elemetos iguais (t1 p2)
-elemiguais :: Peca -> [Peca] -> Int
-elemiguais n [] = 0
-elemiguais n (x:xs) = 
-     if n == x then 1 + elemiguais n xs 
-     else elemiguais n xs
+-- determinha o n de portas(t1 p2)
+elemiguais :: [(Peca,Coordenadas)] -> Int
+elemiguais [] = 0
+elemiguais (x:xs) = 
+     if fst x == Porta then 1 + elemiguais xs 
+     else elemiguais xs
 
 -- verifica se e caixa (t1 p3)
 ecaixa :: (Peca,Coordenadas) -> Bool
@@ -49,8 +49,8 @@ chao ((p,(a,b)):xs) =
       if p == Bloco && b == 0 && a >= 0 then chao xs
       else False 
  
-{-
-validaPotencialMapa' :: [(Peca, Coordenadas)] -> Bool
-validaPotencialMapa' [] = False 
-validaPotencialMapa' (x:xs) | snd x /= snd (head xs) && (elemiguais x (x:xs)) == 1 && caixaflutua (x:xs) &&  espacovazio (x:xs) >= 1 && chao (x:xs)  
-                            | otherwise = False -}
+
+--validaPotencialMapa' :: [(Peca, Coordenadas)] -> Bool
+--validaPotencialMapa' [] = False 
+--validaPotencialMapa' (x:xs) | snd x /= snd (head xs) && (elemiguais x (x:xs)) == 1 && caixaflutua (x:xs) &&  espacovazio (x:xs) >= 1 && chao (x:xs)  
+  --                          | otherwise = False 
