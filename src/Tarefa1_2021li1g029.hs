@@ -1,4 +1,4 @@
-{- |
+      {- |
 Module      : Tarefa1_2021li1g029
 Description : Validação de um potencial mapa
 Copyright   : Duarte Leitão <a100550@alunos.uminho.pt>;
@@ -53,13 +53,23 @@ espacovazio (x:xs) =
 
 -- verifica que a base do mapa e composta por blocos (t1 p5)
 chao :: [(Peca,Coordenadas)] -> Bool 
-chao [] = False
+
 chao ((p,(a,b)):xs) = 
       if p == Bloco && b == 0 && a >= 0 then chao xs
       else False 
- 
 
---validaPotencialMapa' :: [(Peca, Coordenadas)] -> Bool
---validaPotencialMapa' [] = False 
---validaPotencialMapa' (x:xs) | snd x /= snd (head xs) && (elemiguais x (x:xs)) == 1 && caixaflutua (x:xs) &&  espacovazio (x:xs) >= 1 && chao (x:xs)  
-  --                          | otherwise = False 
+-- devolve as cordenadas dos Blocos
+procuraBloco :: [(Peca,Coordenadas )] -> [Coordenadas ]
+procuraBloco [] = []
+procuraBloco (x:xs) =if fst x == Bloco then snd x : procuraBloco xs else procuraBloco xs
+
+-- verifica a continuidade dos blocos
+
+
+
+
+
+
+
+
+
