@@ -10,16 +10,23 @@ module Tarefa1_2021li1g029 where
 
 import LI12122
 
+import Data.List
+
 validaPotencialMapa :: [(Peca, Coordenadas)] -> Bool
 validaPotencialMapa [] = False 
 validaPotencialMapa pecas = posicaoigual pecas == False && nportas pecas <= 1 && caixaflutua pecas == True && espacovazio pecas >= 1 && chao pecas == True 
 
 -- determina se existem mais que uma pecas na mesma posicao (t1 p1)
+sortmapa :: [(Peca,Coordenadas)] -> [(Peca,Coordenadas)] 
+sortmapa [] = []
+sortmapa (x:xs) = sort (x:xs)
+
 posicaoigual :: [(Peca,Coordenadas)] -> Bool 
 posicaoigual [] = False 
 posicaoigual (x:xs) = 
-       if snd x == snd (head xs) then False 
-       else posicaoigual xs
+      if snd x ==  snd (head xs) then False 
+      else posicaoigual xs
+ where (x:xs) = sortmapa (x:xs)
  
 -- determinha o n de portas(t1 p2)
 nportas :: [(Peca,Coordenadas)] -> Int
