@@ -14,7 +14,7 @@ import Data.List
 
 validaPotencialMapa :: [(Peca, Coordenadas)] -> Bool
 validaPotencialMapa [] = False 
-validaPotencialMapa pecas = posicaoigual pecas == False && nportas pecas <= 1 && caixaflutua pecas == True && espacovazio pecas >= 1 && chao pecas == True 
+validaPotencialMapa pecas = posicaoigual pecas == False && nportas pecas <= 1 && caixaflutua pecas == True && espacovazio pecas >= 1 
 
 -- determina se existem mais que uma pecas na mesma posicao (t1 p1)
 sortmapa :: [(Peca,Coordenadas)] -> [(Peca,Coordenadas)] 
@@ -59,7 +59,24 @@ espacovazio (x:xs) =
       else espacovazio xs
 
 -- verifica que a base do mapa e composta por blocos (t1 p5)
-chao :: [(Peca,Coordenadas)] -> Bool 
+
+ponto5daTarefa1 :: [(Peca, Coordenadas)] -> Bool
+ponto5daTarefa1 lo = all (\(x,l) -> Bloco == (fst $ last l)) l
+    where l = ordenaColunas lo
+
+ordenaColunas :: [(Peca, Coordenadas)] -> [(Int, [(Peca, Int)])] -- Peças por ordem, mas colunas não
+ordenaColunas [] = []
+ordenaColunas l'@((p,(x,y)):t) = (x,l) : ordenaColunas t
+    where
+        l = sortOn snd $ aux x l'
+        -- aux :: Int -> [(Peca, Coordenada)] -> [(Peca,Int)] -- Int é a linha
+        aux _ [] = []
+        aux i ((p,(x,y)):t)
+            | x == i = (p,y) : aux i t
+            | otherwise = aux i t
+
+
+{-chao :: [(Peca,Coordenadas)] -> Bool 
 
 chao ((p,(a,b)):xs) = 
       if p == Bloco && b == 0 && a >= 0 then chao xs
@@ -70,7 +87,7 @@ procuraBloco :: [(Peca,Coordenadas )] -> [Coordenadas ]
 procuraBloco [] = []
 procuraBloco (x:xs) =if fst x == Bloco then snd x : procuraBloco xs else procuraBloco xs
 
--- verifica a continuidade dos blocos
+-- verifica a continuidade dos blocos -}
 
 
 
