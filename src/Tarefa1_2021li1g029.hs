@@ -21,7 +21,7 @@ validaPotencialMapa [] = False
 validaPotencialMapa pecas = posicaoigual pecas == False && nportas pecas == 1 && caixaflutua pecas == True && espacovazio pecas >= 1 && ponto5daTarefa1 pecas 
 
 -- determina se existem mais que uma pecas na mesma posicao (t1 p1)
-coord :: [(Peca,Coordenadas)] -> [Coordenadas]
+coord :: [(Peca,Coordenadas)] -> [Coordenadas]  -- devolve a lista de coordenadas das pecas
 coord [] = []
 coord [(x,y)] = [y]
 coord (x:xs) = snd x : coord xs
