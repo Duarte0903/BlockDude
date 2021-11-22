@@ -10,8 +10,15 @@ module Tarefa2_2021li1g029 where
 
 import LI12122
 
+import Data.List
+
+import Tarefa1_2021li1g029
+
 constroiMapa :: [(Peca, Coordenadas)] -> Mapa
-constroiMapa pecas = undefined
+constroiMapa pecas | fst (head pecas) == Porta = Porta ++ constroiMapa (tail pecas)
+                   | fst (head pecas) == Bloco = Bloco ++ constroiMapa (tail pecas)
+                   | fst (head pecas) == Caixa = Caixa ++ constroiMapa (tail pecas)
+                   where pecas = sort (pecas)
 
 desconstroiMapa :: Mapa -> [(Peca, Coordenadas)]
 desconstroiMapa mapa = undefined
