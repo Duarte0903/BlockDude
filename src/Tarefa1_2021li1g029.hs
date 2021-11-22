@@ -18,7 +18,7 @@ import Prelude
 
 validaPotencialMapa :: [(Peca, Coordenadas)] -> Bool
 validaPotencialMapa [] = False 
-validaPotencialMapa pecas = posicaoigual pecas == False && nportas pecas == 1 && caixaflutua pecas == True && espacovazio pecas >= 1 && ponto5daTarefa1 pecas 
+validaPotencialMapa pecas = posicaoigual pecas == False && nportas pecas == 1 && caixaflutua pecas == False && espacovazio pecas >= 1 && ponto5daTarefa1 pecas 
 
 -- determina se existem mais que uma pecas na mesma posicao (t1 p1)
 coord :: [(Peca,Coordenadas)] -> [Coordenadas]  -- devolve a lista de coordenadas das pecas
@@ -55,11 +55,43 @@ caixaflutua ((p,(x,y)):xs) =
       else False
 
 -- verifica que existe no min um espaco vazio (t1 p4)
+ordena :: [(Peca,Coordenadas )] -> [Coordenadas]
+ordena [] = []
+ordena (x:xs) = sort (coord (x:xs))
+
+xmaior :: [(Peca,Coordenadas )] -> Int
+xmaior [] = 0
+xmaior (x:xs) = fst (last (ordena (x:xs)))
+
+ymaior :: [(Peca,Coordenadas )] -> Int 
+ymaior [] = 0
+ymaior (x:xs) = snd (last (ordena (x:xs)))
+
+areamapa :: [(Peca,Coordenadas)] -> Int
+areamapa [] = 0 
+areamapa (x:xs) = xmaior (x:xs) * ymaior (x:xs)
+
+contacaixa :: [(Peca,Coordenadas)] -> Int 
+contacaixa [] = 0
+contacaixa (x:xs) = 
+       if fst x == Caixa then 1 + contacaixa xs
+       else contacaixa xs
+
+contabloco :: [(Peca,Coordenadas)] -> Int
+contabloco [] = 0
+contabloco (x:xs) = 
+       if fst x == Bloco then 1 + contabloco xs
+       else contabloco xs
+
+contaporta :: [(Peca,Coordenadas)] -> Int 
+contaporta [] = 0
+contaporta (x:xs) =
+       if fst x == Porta then 1 + contaporta xs
+       else contaporta xs
+
 espacovazio :: [(Peca,Coordenadas)] -> Int
 espacovazio [] = 0
-espacovazio (x:xs) =
-      if fst x == Vazio then 1 + espacovazio xs
-      else espacovazio xs
+espacovazio (x:xs) = areamapa (x:xs) - (contaporta (x:xs) + contabloco (x:xs)+ contacaixa (x:xs))
 
 -- verifica que a base do mapa e composta por blocos (t1 p5)
 
@@ -78,19 +110,6 @@ ordenaColunas l'@((p,(x,y)):t) = (x,l) : ordenaColunas t
             | x == i = (p,y) : aux i t
             | otherwise = aux i t
 
-
-{-chao :: [(Peca,Coordenadas)] -> Bool 
-
-chao ((p,(a,b)):xs) = 
-      if p == Bloco && b == 0 && a >= 0 then chao xs
-      else False 
-
--- devolve as cordenadas dos Blocos
-procuraBloco :: [(Peca,Coordenadas )] -> [Coordenadas ]
-procuraBloco [] = []
-procuraBloco (x:xs) =if fst x == Bloco then snd x : procuraBloco xs else procuraBloco xs
-
--- verifica a continuidade dos blocos -}
 
 
 
