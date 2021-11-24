@@ -15,10 +15,23 @@ import Data.List
 import Tarefa1_2021li1g029
 
 constroiMapa :: [(Peca, Coordenadas)] -> Mapa
-constroiMapa pecas  case pecas of fst (head pecas) == Porta ->[ [Porta] ++ constroiMapa (tail pecas)]
-                                 fst (head pecas) == Bloco -> [Bloco ++ constroiMapa (tail pecas)]
-                                 fst (head pecas) == Caixa -> [Caixa ++ constroiMapa (tail pecas)]
-                   where pecas = sortOn snd (pecas) 
+constroiMapa pecas = undefined 
+
+mapaporlinhas :: [(Peca,Coordenadas)] -> [[(Peca,Coordenadas)]]
+mapaporlinhas [] = []
+mapaporlinhas (x:xs) = 
+     if snd (snd x) == snd (snd (head xs)) then [[x,head xs]] ++ mapaporlinhas (tail xs)
+     else [[x],[head xs]] ++ mapaporlinhas (tail xs)
+    where (x:xs) = sortOn snd (x:xs)
+
+
+introduzvazio :: [(Peca,Coordenadas)] -> [(Peca,Coordenadas)]
+introduzvazio [] = []
+introduzvazio ((p,(x,y)):xs) = undefined 
+                    
+                     
+
+
 
 desconstroiMapa :: Mapa -> [(Peca, Coordenadas)]
 desconstroiMapa mapa = undefined
