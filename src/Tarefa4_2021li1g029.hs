@@ -1,4 +1,4 @@
-{- |
+    {- |
 Module      : Tarefa4_2021li1g029
 Description : Movimentação do personagem
 Copyright   : Duarte Leitão <a100550@alunos.uminho.pt>;

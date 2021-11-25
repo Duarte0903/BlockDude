@@ -16,18 +16,17 @@ instance Show Jogo where
   show = undefined
 
 show :: Jogo -> String 
-show (Jogo mapa (Jogador coordenadas direcao temccaixa)) = undefined 
+show (Jogo mapa (Jogador coordenadas direcao temccaixa)) = unlines $ map concat $ map (map showpeca ) mapa
 
-temcaixa :: (Peca,Coordenadas) -> Bool 
-temcaixa (j,(x,y)) = ecaixa (j,(x,y-1))
+
 
 showjogador :: Jogador -> String
-showjogador (jogador coordenadas direcao temcaixa) = 
+showjogador (Jogador coordenadas direcao temcaixa) = 
   case direcao of Este -> ">"
                   Oeste -> "<" 
-  case temcaixa of temcaixa (j,(x,y)) -> "C
-                                          J"
 
+
+ 
 showpeca :: Peca -> String 
 showpeca p = case p of 
   Vazio -> " "
