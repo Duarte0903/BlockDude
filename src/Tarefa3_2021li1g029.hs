@@ -12,3 +12,18 @@ import LI12122
 
 instance Show Jogo where
   show = undefined
+
+show :: Jogo -> String 
+show (Jogo mapa (Jogador coordenadas direcao temccaixa)) = 
+
+showdirecao :: Direcao -> String
+showdirecao d = case d of 
+  Este -> ">"
+  Oeste -> "<"
+
+showpeca :: Peca -> String 
+showpeca p = case p of 
+  Vazio -> " "
+  Bloco -> "X"
+  Caixa -> "C"
+  Porta -> "P"             

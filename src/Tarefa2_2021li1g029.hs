@@ -17,21 +17,8 @@ import Tarefa1_2021li1g029
 constroiMapa :: [(Peca, Coordenadas)] -> Mapa
 constroiMapa pecas = undefined 
 
-mapaporlinhas :: [(Peca,Coordenadas)] -> [[(Peca,Coordenadas)]]
-mapaporlinhas [] = []
-mapaporlinhas (x:xs) = 
-     if snd (snd x) == snd (snd (head xs)) then [[x,head xs]] ++ mapaporlinhas (tail xs)
-     else [[x],[head xs]] ++ mapaporlinhas (tail xs)
-    where (x:xs) = sortOn snd (x:xs)
-
-
-introduzvazio :: [(Peca,Coordenadas)] -> [(Peca,Coordenadas)]
-introduzvazio [] = []
-introduzvazio ((p,(x,y)):xs) = undefined 
-                    
-                     
-
-
+matrizvazia :: Int -> Int -> [(Peca,Coordenadas)]
+matrizvazia x y = 
 
 desconstroiMapa :: Mapa -> [(Peca, Coordenadas)]
 desconstroiMapa mapa = undefined
