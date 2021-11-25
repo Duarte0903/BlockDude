@@ -10,16 +10,23 @@ module Tarefa3_2021li1g029 where
 
 import LI12122
 
+import Tarefa1_2021li1g029
+
 instance Show Jogo where
   show = undefined
 
 show :: Jogo -> String 
-show (Jogo mapa (Jogador coordenadas direcao temccaixa)) = 
+show (Jogo mapa (Jogador coordenadas direcao temccaixa)) = undefined 
 
-showdirecao :: Direcao -> String
-showdirecao d = case d of 
-  Este -> ">"
-  Oeste -> "<"
+temcaixa :: (Peca,Coordenadas) -> Bool 
+temcaixa (j,(x,y)) = ecaixa (j,(x,y-1))
+
+showjogador :: Jogador -> String
+showjogador (jogador coordenadas direcao temcaixa) = 
+  case direcao of Este -> ">"
+                  Oeste -> "<" 
+  case temcaixa of temcaixa (j,(x,y)) -> "C
+                                          J"
 
 showpeca :: Peca -> String 
 showpeca p = case p of 
