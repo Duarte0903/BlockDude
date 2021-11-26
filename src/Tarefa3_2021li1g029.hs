@@ -11,9 +11,9 @@ module Tarefa3_2021li1g029 where
 import LI12122
 
 instance Show Jogo where
-  show = undefined
+  
 
-show :: Jogo -> String 
+
 
 
 
@@ -42,8 +42,8 @@ showpeca p = case p of
   Caixa -> "C"
   Porta -> "P"      
   -}    
-    
-show jogo = aux (0,0) jogo where  
+show' :: Jogo -> String 
+show' jogo = aux (0,0) jogo where  
 
 aux :: Coordenadas -> Jogo -> String   -- cordenadas -> (mapa jogador)
 aux _ (Jogo [] _) = ""       -- mapa vazio

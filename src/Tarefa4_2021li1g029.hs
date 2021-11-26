@@ -11,8 +11,9 @@ module Tarefa4_2021li1g029 where
 import LI12122
 
 moveJogador :: Jogo -> Movimento -> Jogo
-moveJogador jogo movimento = undefined
+moveJogador jogo movimentos = undefined
 
 correrMovimentos :: Jogo -> [Movimento] -> Jogo
-correrMovimentos jogo movimentos = undefined
+correrMovimentos (Jogo (mapa) (Jogador (x,y) direcao bool)) (m:ms) | m ==
+
 
