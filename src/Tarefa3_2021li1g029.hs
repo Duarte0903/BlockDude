@@ -12,12 +12,12 @@ import LI12122
 
 instance Show Jogo where
   show = undefined
-{-
+
 show :: Jogo -> String 
-show (Jogo mapa (Jogador coordenadas direcao temccaixa)) = unlines $ map concat $ map (map showpeca ) mapa
 
 
 
+{-
 showjogador :: Jogador -> String
 showjogador (Jogador coordenadas direcao temcaixa) = 
   case direcao of Este -> ">"
@@ -40,13 +40,15 @@ showpeca p = case p of
   Porta -> "P" 
   Bloco -> "X"
   Caixa -> "C"
-  Porta -> "P"            
-  show jogo = aux (0,0) jogo where  -}
+  Porta -> "P"      
+  -}    
+    
+show jogo = aux (0,0) jogo where  
 
 aux :: Coordenadas -> Jogo -> String   -- cordenadas -> (mapa jogador)
 aux _ (Jogo [] _) = ""       -- mapa vazio
 aux _ (Jogo [[]] _) = ""
-aux (x,y) (Jogo ([]:t) jogador) = '\n' : aux (x,y+1) (Jogo t jogador)   -- linha vazia
+aux (x,y) (Jogo ([]:t) jogador) = '\n' : aux (0,y+1) (Jogo t jogador)   -- linha vazia
 aux (x,y) (Jogo ((h:hs):t) (Jogador (xj,yj) dir temcaixa)) 
   | (x,y) == (xj,yj-1) && temcaixa = 'c' : aux (x+1,y) (Jogo (hs:t) (Jogador (xj,yj) dir temcaixa))
   | (x,y) == (xj,yj) = if dir == Oeste 
