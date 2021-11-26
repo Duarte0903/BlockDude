@@ -11,9 +11,8 @@ module Tarefa3_2021li1g029 where
 import LI12122
 
 instance Show Jogo where
-<<<<<<< HEAD
   show = undefined
-
+{-
 show :: Jogo -> String 
 show (Jogo mapa (Jogador coordenadas direcao temccaixa)) = unlines $ map concat $ map (map showpeca ) mapa
 
@@ -28,12 +27,21 @@ showjogador (Jogador coordenadas direcao temcaixa) =
  
 showpeca :: Peca -> String 
 showpeca p = case p of 
+  Vazio -> " "case direcao of Este -> ">"
+                  Oeste -> "<" 
+
+
+ 
+showpeca :: Peca -> String 
+showpeca p = case p of 
   Vazio -> " "
   Bloco -> "X"
   Caixa -> "C"
-  Porta -> "P"             
-=======
-  show jogo = aux (0,0) jogo where 
+  Porta -> "P" 
+  Bloco -> "X"
+  Caixa -> "C"
+  Porta -> "P"            
+  show jogo = aux (0,0) jogo where  -}
 
 aux :: Coordenadas -> Jogo -> String   -- cordenadas -> (mapa jogador)
 aux _ (Jogo [] _) = ""       -- mapa vazio
@@ -49,4 +57,3 @@ aux (x,y) (Jogo ((h:hs):t) (Jogador (xj,yj) dir temcaixa))
   | h == Caixa = 'C' : mapa
   | h == Vazio = ' ' : mapa 
   where mapa = aux (x+1,y) (Jogo (hs:t) (Jogador (xj,yj) dir temcaixa))
->>>>>>> 643eeee7ce1a156901ad647623999ed1ceb48071
