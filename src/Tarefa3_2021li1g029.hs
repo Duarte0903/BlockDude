@@ -16,6 +16,8 @@ show (Jogo mapa (Jogador coordenadas direcao temccaixa)) = unlines $ map concat 
 
 
 
+
+
 showjogador :: Jogador -> String
 showjogador (Jogador coordenadas direcao temcaixa) = 
   case direcao of Este -> ">"
@@ -39,7 +41,8 @@ showpeca p = case p of
   Bloco -> "X"
   Caixa -> "C"
   Porta -> "P"            -}
-  
+
+
 show' :: Jogo -> String 
 show' jogo = aux (0,0) jogo where  
 

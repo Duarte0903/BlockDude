@@ -39,9 +39,7 @@ inserePeca (x:xs) (y:ys) |snd x == snd y = x : inserePeca xs ys
                             -- |otherwise = x: insereVazio p x xs
                             where p = Vazio 
                                 
-metevazios :: [(Peca,Coordenadas)] -> [(Peca,Coordenadas)]
-metevazios [] = []
-metevazios ((p,(x,y)):t) |p == Vazio =
+
 
 -- |p/= Bloco && p/= Caixa && p/= Porta = (Vazio,(x,y)) : metevazios t
  -- |otherwise =  (p,(x,y)) : metevazios t
