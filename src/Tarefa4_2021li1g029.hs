@@ -11,55 +11,32 @@ module Tarefa4_2021li1g029 where
 import LI12122
 import GHCi.Message (THMessage(AddCorePlugin))
 import Data.Text.Unsafe (Iter(Iter))
-import  Tarefa1_2021li1g029
 
 
 moveJogador :: Jogo -> Movimento -> Jogo         -- jogo = (mapa (coordenadas direcao bool))
-moveJogador (Jogo (mapa) (Jogador (x,y) direcao bool)) m | m == AndarEsquerda = (Jogo (mapa) (Jogador (x,y) Oeste bool))
-                                                         | m == AndarDireita  = (Jogo (mapa) (Jogador (x,y) Este bool))
-                                                         | m == Trepar && direcao == Oeste = (Jogo (mapa) (Jogador (x-1,y+1) Oeste bool))
-                                                         | m == Trepar && direcao == Este = (Jogo (mapa) (Jogador (x+1,y+1) Este bool))
-                                                         | m == InterageCaixa = (Jogo (mapa) (Jogador (x,y) direcao True))
-
-blocoempilhado :: [(Peca,Coordenadas)] -> Bool 
-blocoempilhado [] = False 
-blocoempilhado ((p,(x,y)):xs) = 
-     if ebloco (p,(x,y+1)) then True 
-     else False 
-
-
-
-blocoflutua :: [(Peca, Coordenadas )] -> Bool
-blocoflutua [] = False
-blocoflutua ((p, (x,y)):xs) |ebloco (p, (x,y-1))  = False
-                            |ebloco (p, (x,y+1))  = False 
-                            |ebloco (p, (x-1,y))  = False
-                            |ebloco (p, (x+1,y))  = False 
-                            |ebloco (p, (x+1,y+1))= False 
-                            |ebloco (p, (x+1,y-1))= False
-                            |ebloco (p, (x-1,y+1))= False 
-                            |ebloco (p, (x-1,y-1))= False 
-                            |otherwise = True 
-                            
+moveJogador (Jogo (mapa) (Jogador (x,y) dir b)) m | m == AndarEsquerda = (Jogo (mapa) (Jogador (x,y) Oeste b))
+                                                  | m == AndarEsquerda && dir == Oeste = (Jogo (mapa) (Jogador (x-1,y) Oeste b))
+                                                  | m == AndarDireita = (Jogo (mapa) (Jogador (x,y) Este b))
+                                                  | m == AndarEsquerda && dir == Oeste = (Jogo (mapa) (Jogador (x+1,y) Este b))
+                                                  | m == Trepar && dir == Oeste = (Jogo (mapa) (Jogador (x-1,y+1) Oeste b))
+                                                  | m == Trepar && dir == Este = (Jogo (mapa) (Jogador (x+1,y+1) Este b))
+                                                  | m == InterageCaixa && dir == Este && b == False = (Jogo (mapa) (Jogador (x,y) Este True))
+                                                  | m == InterageCaixa && dir == Este && b == True = (Jogo (mapa) (Jogador (x,y) Este False))
+                                                  | m == InterageCaixa && dir == Oeste && b == False = (Jogo (mapa) (Jogador (x,y) Oeste True))
+                                                  | m == InterageCaixa && dir == Oeste && b == True = (Jogo (mapa) (Jogador (x,y) Oeste False))
                                                             
 
 correrMovimentos :: Jogo -> [Movimento] -> Jogo
-correrMovimentos (Jogo (mapa) (Jogador (x,y) direcao False)) (m:ms) -- jogador sem caixa
- | m == AndarDireita  && (head ms) == AndarDireita  = correrMovimentos (Jogo (mapa) (Jogador (x+1,y) Este False)) (tail ms)
- | m == AndarEsquerda && (head ms) == AndarEsquerda  = correrMovimentos (Jogo (mapa) (Jogador (x-1,y) Oeste False)) (tail ms)
- 
-correrMovimentos (Jogo (mapa) (Jogador (x,y) direcao False)) (m:ms) -- jogador trepa sem caixa
- | m == Trepar && direcao == Este = correrMovimentos (Jogo (mapa) (Jogador (x+1,y+1) Este False)) ms
- | m == Trepar && direcao == Oeste = correrMovimentos (Jogo (mapa) (Jogador (x-1,y-1) Oeste False)) ms
- 
-correrMovimentos (Jogo (mapa) (Jogador (x,y) direcao False)) (m:ms) -- jogador interage com a caixa
- | m == InterageCaixa = correrMovimentos (Jogo (mapa) (Jogador (x,y) direcao True)) ms  -- pega na caixa
- | m == InterageCaixa && (head ms == InterageCaixa ) = correrMovimentos (Jogo ( mapa) (Jogador (x,y) direcao False)) (tail ms) -- pega e larga a caixa
-correrMovimentos (Jogo (mapa) (Jogador (x,y) direcao True)) (InterageCaixa:ms) = (Jogo (mapa) (Jogador (x,y) direcao False)) -- deixa cair a caixa
-correrMovimentos (Jogo (mapa) (Jogador (x,y) direcao True)) (m:ms)    -- anda com a caixa em cima 
- | m == AndarDireita && (head ms) == AndarDireita  = correrMovimentos (Jogo (mapa) (Jogador (x+1,y) Este True)) (tail ms)   -- anda com caixa para direita                                                              
- | m == AndarEsquerda && (head ms) == AndarEsquerda  = correrMovimentos (Jogo (mapa) (Jogador (x-1,y) Oeste True)) (tail ms)  -- anda com caixa para esquerda 
+correrMovimentos (Jogo (mapa) (Jogador (x,y) dir b)) [] = (Jogo (mapa) (Jogador (x,y) Este False))
+correrMovimentos (Jogo (mapa) (Jogador (x,y) dir b)) l = aux1 (Jogo (mapa) (Jogador (x,y) dir b)) l
 
-correrMovimentos (Jogo (mapa) (Jogador (x,y) direcao True)) (m:ms)
- | m == Trepar && direcao == Este = correrMovimentos (Jogo (mapa) (Jogador (x+1,y+1) Este True)) ms -- trepa com caixa
- | m == Trepar && direcao == Oeste = correrMovimentos (Jogo (mapa) (Jogador (x-1,y-1) Oeste True)) ms
+aux1 :: Jogo -> [Movimento] -> Jogo
+aux1 (Jogo (mapa) (Jogador (x,y) dir b)) l = aux3 (aux2 (Jogo (mapa) (Jogador (x,y) dir b)) l)
+
+aux2 :: Jogo -> [Movimento] -> [Jogo]
+aux2 (Jogo (mapa) (Jogador (x,y) dir b)) [] = [(Jogo (mapa) (Jogador (x,y) dir b))]
+aux2 (Jogo (mapa) (Jogador (x,y) dir b)) (h:t) = moveJogador (Jogo (mapa) (Jogador (x,y) dir b)) h : aux2 (Jogo (mapa) (Jogador (x,y) dir b)) t
+
+aux3 :: [Jogo] -> Jogo 
+aux3 [(Jogo (mapa) (Jogador (x,y) dir b))] = (Jogo (mapa) (Jogador (x,y) dir b))
+aux3 (h:t) = aux3 t
