@@ -14,16 +14,16 @@ import Data.Text.Unsafe (Iter(Iter))
 
 
 moveJogador :: Jogo -> Movimento -> Jogo         -- jogo = (mapa (coordenadas direcao bool))
-moveJogador (Jogo (mapa) (Jogador (x,y) dir b)) m | m == AndarEsquerda = (Jogo (mapa) (Jogador (x,y) Oeste b))
-                                                  | m == AndarEsquerda && dir == Oeste = (Jogo (mapa) (Jogador (x-1,y) Oeste b))
-                                                  | m == AndarDireita = (Jogo (mapa) (Jogador (x,y) Este b))
-                                                  | m == AndarEsquerda && dir == Oeste = (Jogo (mapa) (Jogador (x+1,y) Este b))
-                                                  | m == Trepar && dir == Oeste = (Jogo (mapa) (Jogador (x-1,y+1) Oeste b))
-                                                  | m == Trepar && dir == Este = (Jogo (mapa) (Jogador (x+1,y+1) Este b))
-                                                  | m == InterageCaixa && dir == Este && b == False = (Jogo (mapa) (Jogador (x,y) Este True))
-                                                  | m == InterageCaixa && dir == Este && b == True = (Jogo (mapa) (Jogador (x,y) Este False))
-                                                  | m == InterageCaixa && dir == Oeste && b == False = (Jogo (mapa) (Jogador (x,y) Oeste True))
-                                                  | m == InterageCaixa && dir == Oeste && b == True = (Jogo (mapa) (Jogador (x,y) Oeste False))
+moveJogador (Jogo (mapa) (Jogador (x,y) dir b)) m | m == AndarEsquerda = (Jogo (mapa) (Jogador (x,y) Oeste b))                                  -- vira para oeste
+                                                  | m == AndarEsquerda && dir == Oeste = (Jogo (mapa) (Jogador (x-1,y) Oeste b))                -- anda para oeste
+                                                  | m == AndarDireita = (Jogo (mapa) (Jogador (x,y) Este b))                                    -- vira para este
+                                                  | m == AndarEsquerda && dir == Oeste = (Jogo (mapa) (Jogador (x+1,y) Este b))                 -- anda para este
+                                                  | m == Trepar && dir == Oeste = (Jogo (mapa) (Jogador (x-1,y+1) Oeste b))                     -- trepa virado para oeste
+                                                  | m == Trepar && dir == Este = (Jogo (mapa) (Jogador (x+1,y+1) Este b))                       -- trepa virado para este
+                                                  | m == InterageCaixa && dir == Este && b == False = (Jogo (mapa) (Jogador (x,y) Este True))   -- pega na caixa virado para este 
+                                                  | m == InterageCaixa && dir == Este && b == True = (Jogo (mapa) (Jogador (x,y) Este False))   -- larga a caixa virado para este
+                                                  | m == InterageCaixa && dir == Oeste && b == False = (Jogo (mapa) (Jogador (x,y) Oeste True)) -- pega na caixa virado para oeste 
+                                                  | m == InterageCaixa && dir == Oeste && b == True = (Jogo (mapa) (Jogador (x,y) Oeste False)) -- larga a caixa virado para oeste 
                                                             
 
 correrMovimentos :: Jogo -> [Movimento] -> Jogo
