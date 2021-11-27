@@ -19,9 +19,18 @@ constroiMapa pecas = undefined
 
 matrizvazia :: [(Peca, Coordenadas)] -> Mapa
 matrizvazia l = replicate (ymaior l) (replicate (xmaior l) Vazio)
+{-
+matrizporlinhas :: [(Peca, Coordenadas)] -> [[(Peca, Coordenadas)]]
+matrizporlinhas [] = [[]]
+matrizporlinhas x = [x]
+matrizporlinhas (x:xs) = 
+     if snd (snd x) == snd (snd (head xs)) then (x : (head xs)) : tail xs
+     else [x] : xs -}
 
+ 
 inserepeca :: [(Peca, Coordenadas)] -> Mapa -> Mapa 
 inserepeca [] (y:ys) = (y:ys)
+inserepeca (x:xs) [] = undefined  
 
                                   
 
@@ -44,7 +53,11 @@ inserePeca (x:xs) (y:ys) |snd x == snd y = x : inserePeca xs ys
 -- |p/= Bloco && p/= Caixa && p/= Porta = (Vazio,(x,y)) : metevazios t
  -- |otherwise =  (p,(x,y)) : metevazios t
 
-
-desconstroiMapa :: Mapa -> [(Peca, Coordenadas)]
-desconstroiMapa mapa = undefined
 -}
+desconstroiMapa :: Mapa -> [(Peca, Coordenadas)]
+desconstroiMapa mapa = undefined 
+
+
+auxmapa :: Mapa -> Int -> Int -> (Peca, Coordenadas)
+auxmapa (x:xs) 0 0 = (head x, (0,0))
+auxmapa (x:xs) a b = (head x, (a,b)) 
