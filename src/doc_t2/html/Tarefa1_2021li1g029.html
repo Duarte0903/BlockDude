@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /><title>Tarefa1_2021li1g029</title><link href="ocean.css" rel="stylesheet" type="text/css" title="Ocean" /><link rel="stylesheet" type="text/css" href="quick-jump.css" /><script src="haddock-bundle.min.js" async="async" type="text/javascript"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML" type="text/javascript"></script></head><body><div id="package-header"><ul class="links" id="page-menu"><li><a href="index.html">Contents</a></li><li><a href="doc-index.html">Index</a></li></ul><p class="caption empty">&nbsp;</p></div><div id="content"><div id="module-header"><table class="info"><tr><th valign="top">Copyright</th><td>Duarte Leit&#227;o &lt;a100550@alunos.uminho.pt&gt;;<br />: Jo&#227;o Pereira &lt;a100900@alunos.uminho.pt&gt;;</td></tr><tr><th>Safe Haskell</th><td>Safe</td></tr></table><p class="caption">Tarefa1_2021li1g029</p></div><div id="description"><p class="caption">Description</p><div class="doc"><p>M&#243;dulo para a realiza&#231;&#227;o da Tarefa 1 do projeto de LI1 em 2021/22.</p></div></div><div id="synopsis"><details id="syn"><summary>Synopsis</summary><ul class="details-toggle" data-details-id="syn"><li class="src short"><a href="#v:validaPotencialMapa">validaPotencialMapa</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Bool</li><li class="src short"><a href="#v:coord">coord</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; [<a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>]</li><li class="src short"><a href="#v:posicaoigual">posicaoigual</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Bool</li><li class="src short"><a href="#v:nportas">nportas</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int</li><li class="src short"><a href="#v:ecaixa">ecaixa</a> :: (<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>) -&gt; Bool</li><li class="src short"><a href="#v:ebloco">ebloco</a> :: (<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>) -&gt; Bool</li><li class="src short"><a href="#v:caixaflutua">caixaflutua</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Bool</li><li class="src short"><a href="#v:ordena">ordena</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; [<a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>]</li><li class="src short"><a href="#v:xmaior">xmaior</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int</li><li class="src short"><a href="#v:ymaior">ymaior</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int</li><li class="src short"><a href="#v:areamapa">areamapa</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int</li><li class="src short"><a href="#v:contacaixa">contacaixa</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int</li><li class="src short"><a href="#v:contabloco">contabloco</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int</li><li class="src short"><a href="#v:contaporta">contaporta</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int</li><li class="src short"><a href="#v:espacovazio">espacovazio</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int</li><li class="src short"><a href="#v:ponto5daTarefa1">ponto5daTarefa1</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Bool</li><li class="src short"><a href="#v:ordenaColunas">ordenaColunas</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; [(Int, [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, Int)])]</li></ul></details></div><div id="interface"><h1>Documentation</h1><div class="top"><p class="src"><a id="v:validaPotencialMapa" class="def">validaPotencialMapa</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Bool <a href="#v:validaPotencialMapa" class="selflink">#</a></p></div><div class="top"><p class="src"><a id="v:coord" class="def">coord</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; [<a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>] <a href="#v:coord" class="selflink">#</a></p><div class="doc"><p>devolve a lista de coordenadas das pecas</p><pre>coord :: [(Peca,Coordenadas)] -&gt; [Coordenadas]
+coord [] = []
+coord [(x,y)] = [y]
+coord (x:xs) = snd x : coord xs
+</pre><h2>Exemplos de utiliza&#231;&#227;o</h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>coord [(Bloco,(1,2)),(Porta,(3,4))]
+</code></strong>[(1,2),(3,4)]
+</pre></div></div><div class="top"><p class="src"><a id="v:posicaoigual" class="def">posicaoigual</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Bool <a href="#v:posicaoigual" class="selflink">#</a></p><div class="doc"><p>verifica se existem mais que uma pecas na mesma posicao</p><pre>posicaoigual :: [(Peca,Coordenadas)] -&gt; Bool
+posicaoigual [] = False
+posicaoigual (x:xs) | (snd x) <code>elem</code> (coord xs) = True
+                    | otherwise = posicaoigual xs
+</pre><h2>Exemplos de utiliza&#231;&#227;o</h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>posicaoigual [(Bloco,(1,2)),(Porta,(3,4))]
+</code></strong>False
+<code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>posicaoigual [(Bloco,(1,2)),(Porta,(1,2))]
+</code></strong>True
+</pre></div></div><div class="top"><p class="src"><a id="v:nportas" class="def">nportas</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int <a href="#v:nportas" class="selflink">#</a></p><div class="doc"><p>determinha o n de portas(t1 p2)</p><pre>nportas :: [(Peca,Coordenadas)] -&gt; Int
+nportas [] = 0
+nportas (x:xs) =
+     if fst x == Porta then 1 + nportas xs
+     else nportas xs
+</pre><h2>Exemplos de utiliza&#231;&#227;o</h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>nportas [(Porta,(1,2))]
+</code></strong>1
+<code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>nportas [(Bloco,(1,2))]
+</code></strong>0
+</pre></div></div><div class="top"><p class="src"><a id="v:ecaixa" class="def">ecaixa</a> :: (<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>) -&gt; Bool <a href="#v:ecaixa" class="selflink">#</a></p><div class="doc"><p>verifica se e caixa (t1 p3)</p><pre>ecaixa :: (Peca,Coordenadas) -&gt; Bool
+ecaixa (x,_) | x == Caixa = True
+             | otherwise = False
+</pre><h2>Exemplos de utiliza&#231;&#227;o</h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ecaixa (Caixa,(1,2))
+</code></strong>True
+<code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ecaixa (Bloco,(1,2))
+</code></strong>False
+</pre></div></div><div class="top"><p class="src"><a id="v:ebloco" class="def">ebloco</a> :: (<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>) -&gt; Bool <a href="#v:ebloco" class="selflink">#</a></p><div class="doc"><p>verifica se e bloco (t1 p3)</p><pre>ebloco :: (Peca,Coordenadas) -&gt; Bool
+ebloco (x,_) | x == Bloco = True
+             | otherwise = False
+</pre><h2>Exemplos de utiliza&#231;&#227;o </h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ebloco (Bloco,(1,2))
+</code></strong>True
+<code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ebloco (Porta,(1,2))
+</code></strong>False
+</pre></div></div><div class="top"><p class="src"><a id="v:caixaflutua" class="def">caixaflutua</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Bool <a href="#v:caixaflutua" class="selflink">#</a></p><div class="doc"><p>verifica se a caixa flutua (t1 p3)</p><pre>caixaflutua :: [(Peca,Coordenadas)] -&gt; Bool
+caixaflutua ((p,(x,y)):xs) =
+      if ecaixa (p,(x,y-1)) || ebloco (p,(x,y-1)) then caixaflutua xs
+      else False
+</pre><h2>Exemplos de utiliza&#231;&#227;o </h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>caixaflutua [(Caixa,(5,2))]
+</code></strong>True
+<code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>caixaflutua [(Caixa,(0,1)),(Bloco,(0,0))]
+</code></strong>False
+</pre></div></div><div class="top"><p class="src"><a id="v:ordena" class="def">ordena</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; [<a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>] <a href="#v:ordena" class="selflink">#</a></p><div class="doc"><p>cria uma lista de coordenadas ordenada </p><pre>ordena :: [(Peca,Coordenadas )] -&gt; [Coordenadas]
+ordena [] = []
+ordena (x:xs) = sort (coord (x:xs))
+</pre><h2>Exemplos de utiliza&#231;&#227;o</h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ordena [(Bloco,(0,0)),(Porta,(1,1))]
+</code></strong>[(0,0),(1,1)]
+</pre></div></div><div class="top"><p class="src"><a id="v:xmaior" class="def">xmaior</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int <a href="#v:xmaior" class="selflink">#</a></p><div class="doc"><p>determina o comprimento da matriz</p><pre>xmaior :: [(Peca,Coordenadas )] -&gt; Int
+xmaior [] = 0
+xmaior (x:xs) = fst (last (ordena (x:xs))) + 1
+</pre><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>xmaior [(Bloco,(0,0)),(Bloco,(1,0))]
+</code></strong>2
+</pre></div></div><div class="top"><p class="src"><a id="v:ymaior" class="def">ymaior</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int <a href="#v:ymaior" class="selflink">#</a></p><div class="doc"><p>calcula a largua da matriz</p><pre>ymaior :: [(Peca,Coordenadas )] -&gt; Int 
+ymaior [] = 0
+ymaior (x:xs) = snd (last (ordena (x:xs))) + 1
+</pre><h2>Exemplos de utiliza&#231;&#227;o</h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>ymaior [(Bloco,(0,0)),(Bloco,(0,1))]
+</code></strong>2
+</pre></div></div><div class="top"><p class="src"><a id="v:areamapa" class="def">areamapa</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int <a href="#v:areamapa" class="selflink">#</a></p><div class="doc"><p>calcula a area do mapa</p><pre>areamapa :: [(Peca,Coordenadas)] -&gt; Int
+areamapa [] = 0 
+areamapa (x:xs) = xmaior (x:xs) * ymaior (x:xs)
+</pre><h2>Exemplos de utiliza&#231;&#227;o</h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>[(Bloco,(0,0)),(Bloco,(1,0)),(Bloco,(0,1)),(Bloco,(1,1))]
+</code></strong>4
+</pre></div></div><div class="top"><p class="src"><a id="v:contacaixa" class="def">contacaixa</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int <a href="#v:contacaixa" class="selflink">#</a></p><div class="doc"><p>conta o numero de caixas</p><pre>contacaixa :: [(Peca,Coordenadas)] -&gt; Int 
+contacaixa [] = 0
+contacaixa (x:xs) = 
+       if fst x == Caixa then 1 + contacaixa xs
+       else contacaixa xs
+</pre><h2>Exemplos de utiliza&#231;&#227;o</h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>contacaixa [(Caixa,(0,0))]
+</code></strong>1
+<code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>contacaixa [(Bloco,(0,0))]
+</code></strong>0
+</pre></div></div><div class="top"><p class="src"><a id="v:contabloco" class="def">contabloco</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int <a href="#v:contabloco" class="selflink">#</a></p><div class="doc"><p>conta o numero de blocos</p><pre>contabloco :: [(Peca,Coordenadas)] -&gt; Int
+contabloco [] = 0
+contabloco (x:xs) = 
+       if fst x == Bloco then 1 + contabloco xs
+       else contabloco xs
+</pre><h2>Exemplos de utiliza&#231;&#227;o</h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>contabloco [(Bloco,(0,0))]
+</code></strong>1
+<code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>contabloco [(Porta,(0,0))]
+</code></strong>0
+</pre></div></div><div class="top"><p class="src"><a id="v:contaporta" class="def">contaporta</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int <a href="#v:contaporta" class="selflink">#</a></p><div class="doc"><p>conta o numero de portas</p><pre>contaporta :: [(Peca,Coordenadas)] -&gt; Int 
+contaporta [] = 0
+contaporta (x:xs) =
+       if fst x == Porta then 1 + contaporta xs
+       else contaporta xs
+</pre><h2>Exemplos de utliza&#231;&#227;o</h2><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>contaporta [(Porta,(0,0))]
+</code></strong>1
+<code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>contaporta [(Bloco,(0,0))]
+</code></strong>0
+</pre></div></div><div class="top"><p class="src"><a id="v:espacovazio" class="def">espacovazio</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Int <a href="#v:espacovazio" class="selflink">#</a></p><div class="doc"><p>conta os espca&#231;os vazios</p><pre>espacovazio :: [(Peca,Coordenadas)] -&gt; Int
+espacovazio [] = 0
+espacovazio (x:xs) = areamapa (x:xs) - (contaporta (x:xs) + contabloco (x:xs)+ contacaixa (x:xs))
+</pre><pre class="screen"><code class="prompt">&gt;&gt;&gt; </code><strong class="userinput"><code>espacovazio [(Bloco,(1,0)),(Bloco,(0,1)),(Bloco,(1,1))]
+</code></strong>1
+</pre></div></div><div class="top"><p class="src"><a id="v:ponto5daTarefa1" class="def">ponto5daTarefa1</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; Bool <a href="#v:ponto5daTarefa1" class="selflink">#</a></p></div><div class="top"><p class="src"><a id="v:ordenaColunas" class="def">ordenaColunas</a> :: [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, <a href="LI12122.html#t:Coordenadas" title="LI12122">Coordenadas</a>)] -&gt; [(Int, [(<a href="LI12122.html#t:Peca" title="LI12122">Peca</a>, Int)])] <a href="#v:ordenaColunas" class="selflink">#</a></p></div></div></div><div id="footer"><p>Produced by <a href="http://www.haskell.org/haddock/">Haddock</a> version 2.22.0</p></div></body></html>
