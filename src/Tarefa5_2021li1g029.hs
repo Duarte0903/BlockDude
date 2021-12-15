@@ -13,6 +13,7 @@ import Graphics.Gloss.Interface.Pure.Game
 import Graphics.Gloss.Juicy(loadJuicy)
 import Graphics.Gloss.Data.Color
 import Graphics.Gloss.Data.Display
+import BasicTypes (Boxity(Boxed))
 
 data Jogo = Jogo (Int,Int) [(Int,Int)]
 
@@ -29,16 +30,20 @@ window = InWindow
   (1366,768)           -- Dimensão da Janela
   (683,384)            -- Posição no ecrã 
 
-
 fr :: Int              -- Frame Rate
 fr = 25
 
 
 draw :: World -> Picture 
-draw (VenceuJogo, jogo) = Translate (-200) 0 (color red (Text "Vitória"))
+draw (VenceuJogo, jogo) = Translate (-200) 0 (color red (Text "VENCEU!"))
 draw (Controlador Jogar, jogo) = Pictures [Color blue $ drawOption "Jogar", Translate (20) (-90) $ drawOption "Sair", Translate (-310) (100) $ color orange   $ Text "Block Dude"]
 draw (Controlador Sair, jogo) = Pictures [drawOption "Jogar", Color blue $ Translate (20) (-90) $ drawOption "Sair", Translate (-310) (100) $ color orange $ Text "Block Dude"]
 draw (Modojogo (Jogo (x,y) l), jogo) = undefined 
+ 
+
+
+
+
 
 
 drawOption :: String -> Picture
@@ -50,13 +55,20 @@ engine p l = Jogo p (filter (p/=) l)
 
 
 event :: Event -> World -> World
-event _ w = w
 event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Jogar, jogo) = (Modojogo jogo, jogo)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Jogar, jogo) = (Controlador Sair, jogo)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Jogar, jogo) = (Controlador Sair, jogo)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Sair, jogo) = (Controlador Jogar, jogo)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Sair, jogo) = (Controlador Jogar, jogo)
 event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Sair, jogo) = undefined
+event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo, jogo) = (Controlador Jogar, jogo)
+event _ (Modojogo (Jogo (x, y) []), jogo) = (VenceuJogo, jogo)
+event (EventKey (SpecialKey KeyUp) Down _ _) (Modojogo (Jogo (x, y) l), jogo) = (Modojogo $ engine (x + 50, y + 50) l, jogo)
+event (EventKey (SpecialKey KeyDown) Down _ _) (Modojogo (Jogo (x, y) l), jogo) = (Modojogo $ engine (x -50, y - 50) l, jogo)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Modojogo (Jogo (x, y) l), jogo) = (Modojogo $ engine (x - 50, y) l, jogo)
+event (EventKey (SpecialKey KeyRight) Down _ _) (Modojogo (Jogo (x, y) l), jogo) = (Modojogo $ engine (x + 50, y) l, jogo)
+event _ w = w
+
 
 
 time :: Float -> World -> World
