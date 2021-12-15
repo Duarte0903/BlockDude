@@ -17,9 +17,11 @@ import Graphics.Gloss.Data.Display
 
 data Jogo = Jogo (Int,Int) [(Int,Int)]
 
-data Menu = Controlador Opcoes | Modojogo Jogo | VenceuJogo | Devs Creditos
+data Menu = Controlador Opcoes | Modojogo Jogo | VenceuJogo | Modocred Cred
  
 data Opcoes = Jogar | Creditos | Sair 
+
+data Cred = VMenu
 
 type World = (Menu,Jogo)
 
@@ -42,11 +44,11 @@ draw (Controlador Jogar, jogo) = Pictures [Color blue $ drawOption "Jogar", Tran
 draw (Controlador Creditos, jogo) = Pictures [drawOption "Jogar", Translate (20) (-90) $ drawOption "Sair", Translate (-35) (-165) $ Color blue $ drawOption "Creditos", Translate (-310) (100) $ color orange   $ Text "Block Dude"]
 draw (Controlador Sair, jogo) = Pictures [drawOption "Jogar", Color blue $ Translate (20) (-90) $ drawOption "Sair",Translate (-35) (-165) $ drawOption "Creditos", Translate (-310) (100) $ color orange $ Text "Block Dude"]
 draw (Modojogo (Jogo (x,y) l), jogo) = undefined
-draw (Devs Creditos, jogo) = Pictures [] 
- 
+draw (Modocred VMenu, jogo) = Pictures drawCredits
 
-drawCredits :: [Picture] 
-drawCredits = [Color blue $ Text "Duarte Leitão", Color blue $ Text "João Pereria"] 
+drawCredits :: [Picture]   -- Desenha a página dos Créditos 
+drawCredits = [Translate (-155) 0 $ Scale (0.5) (0.5) $ Color blue $ Text "Duarte Leitao", Translate (-155) (-70) $ Scale (0.5) (0.5) $ Color blue $ Color blue $ Text "Joao Pereira", Translate (-25) (-300) $ Scale (0.3) (0.3) $ Color red $ Color orange $ Text "Menu"]
+
 
 drawOption :: String -> Picture
 drawOption option = Translate (-50) 0 $ Scale (0.5) (0.5) $ Text option
@@ -65,7 +67,8 @@ event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Sair, jogo) = (Contr
 event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Sair, jogo) = undefined
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Creditos, jogo) = (Controlador Jogar, jogo)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Creditos, jogo) = (Controlador Sair, jogo)
-
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Creditos, jogo) = (Modocred VMenu, jogo)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (Modocred VMenu, jogo) = (Controlador Jogar, jogo)
 event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo, jogo) = (Controlador Jogar, jogo)
 event _ (Modojogo (Jogo (x, y) []), jogo) = (VenceuJogo, jogo)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Modojogo (Jogo (x, y) l), jogo) = (Modojogo $ engine (x + 50, y + 50) l, jogo)
