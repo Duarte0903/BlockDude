@@ -13,15 +13,17 @@ import Graphics.Gloss.Interface.Pure.Game
 import Graphics.Gloss.Juicy(loadJuicy)
 import Graphics.Gloss.Data.Color
 import Graphics.Gloss.Data.Display
-import BasicTypes (Boxity(Boxed))
+
 
 data Jogo = Jogo (Int,Int) [(Int,Int)]
 
-data Menu = Controlador Opcoes | Modojogo Jogo | VenceuJogo 
+data Menu = Controlador Opcoes | Modojogo Jogo | VenceuJogo | Devs Creditos
  
-data Opcoes = Jogar | Sair 
+data Opcoes = Jogar | Creditos | Sair 
 
 type World = (Menu,Jogo)
+
+type Creditos = String 
 
 
 window :: Display 
@@ -36,15 +38,15 @@ fr = 25
 
 draw :: World -> Picture 
 draw (VenceuJogo, jogo) = Translate (-200) 0 (color red (Text "VENCEU!"))
-draw (Controlador Jogar, jogo) = Pictures [Color blue $ drawOption "Jogar", Translate (20) (-90) $ drawOption "Sair", Translate (-310) (100) $ color orange   $ Text "Block Dude"]
-draw (Controlador Sair, jogo) = Pictures [drawOption "Jogar", Color blue $ Translate (20) (-90) $ drawOption "Sair", Translate (-310) (100) $ color orange $ Text "Block Dude"]
-draw (Modojogo (Jogo (x,y) l), jogo) = undefined 
+draw (Controlador Jogar, jogo) = Pictures [Color blue $ drawOption "Jogar", Translate (20) (-90) $ drawOption "Sair", Translate (-35) (-165) $ drawOption "Creditos", Translate (-310) (100) $ color orange   $ Text "Block Dude"]
+draw (Controlador Creditos, jogo) = Pictures [drawOption "Jogar", Translate (20) (-90) $ drawOption "Sair", Translate (-35) (-165) $ Color blue $ drawOption "Creditos", Translate (-310) (100) $ color orange   $ Text "Block Dude"]
+draw (Controlador Sair, jogo) = Pictures [drawOption "Jogar", Color blue $ Translate (20) (-90) $ drawOption "Sair",Translate (-35) (-165) $ drawOption "Creditos", Translate (-310) (100) $ color orange $ Text "Block Dude"]
+draw (Modojogo (Jogo (x,y) l), jogo) = undefined
+draw (Devs Creditos, jogo) = Pictures [] 
  
 
-
-
-
-
+drawCredits :: [Picture] 
+drawCredits = [Color blue $ Text "Duarte Leitão", Color blue $ Text "João Pereria"] 
 
 drawOption :: String -> Picture
 drawOption option = Translate (-50) 0 $ Scale (0.5) (0.5) $ Text option
@@ -56,11 +58,14 @@ engine p l = Jogo p (filter (p/=) l)
 
 event :: Event -> World -> World
 event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Jogar, jogo) = (Modojogo jogo, jogo)
-event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Jogar, jogo) = (Controlador Sair, jogo)
+event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Jogar, jogo) = (Controlador Creditos, jogo)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Jogar, jogo) = (Controlador Sair, jogo)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Sair, jogo) = (Controlador Jogar, jogo)
-event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Sair, jogo) = (Controlador Jogar, jogo)
+event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Sair, jogo) = (Controlador Creditos, jogo)
 event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Sair, jogo) = undefined
+event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Creditos, jogo) = (Controlador Jogar, jogo)
+event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Creditos, jogo) = (Controlador Sair, jogo)
+
 event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo, jogo) = (Controlador Jogar, jogo)
 event _ (Modojogo (Jogo (x, y) []), jogo) = (VenceuJogo, jogo)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Modojogo (Jogo (x, y) l), jogo) = (Modojogo $ engine (x + 50, y + 50) l, jogo)
