@@ -24,7 +24,13 @@ data Opcoes = Jogar | Creditos | Sair
 data Cred = VMenu
 
 data Imagens = Imagens { 
-  background :: Picture
+  background :: Picture,
+  block :: Picture,
+  dude :: Picture,
+  jogar_preto :: Picture,
+  jogar_azul :: Picture,
+  sair_preto :: Picture,
+  sair_zaul :: Picture 
   }
 
 type World = (Menu,Jogo,Imagens)
@@ -44,9 +50,9 @@ fr = 25
 
 draw :: World -> Picture 
 draw (VenceuJogo, jogo, imgs) = Translate (-200) 0 (color red (Text "VENCEU!"))
-draw (Controlador Jogar, jogo, imgs) = Pictures [background imgs, Color blue $ drawOption "Jogar", Translate (20) (-90) $ drawOption "Sair", Translate (-35) (-165) $ drawOption "Creditos", Translate (-310) (100) $ color orange   $ Text "Block Dude"]
-draw (Controlador Creditos, jogo, imgs) = Pictures [background imgs, drawOption "Jogar", Translate (20) (-90) $ drawOption "Sair", Translate (-35) (-165) $ Color blue $ drawOption "Creditos", Translate (-310) (100) $ color orange   $ Text "Block Dude"]
-draw (Controlador Sair, jogo, imgs) = Pictures [background imgs, drawOption "Jogar", Color blue $ Translate (20) (-90) $ drawOption "Sair",Translate (-35) (-165) $ drawOption "Creditos", Translate (-310) (100) $ color orange $ Text "Block Dude"]
+draw (Controlador Jogar, jogo, imgs) = Pictures [background imgs, Translate 30 0 $ Scale 2 2 $ jogar_azul imgs, Translate 25 (-80) $ Scale 2 2 $ sair_preto imgs, Translate (-35) (-165) $ drawOption "Creditos", Translate (-140) (140) $ Scale (5) (5) $ block imgs, Translate (240) (140) $ Scale (5) (5) $ dude imgs]
+draw (Controlador Creditos, jogo, imgs) = Pictures [background imgs, Translate 30 0 $ Scale 2 2 $ jogar_preto imgs,  Translate 25 (-80) $ Scale 2 2 $ sair_preto imgs, Translate (-35) (-165) $ Color blue $ drawOption "Creditos", Translate (-140) (140) $ Scale (5) (5) $ block imgs, Translate (240) (140) $ Scale (5) (5) $ dude imgs]
+draw (Controlador Sair, jogo, imgs) = Pictures [background imgs, Translate 30 0 $ Scale 2 2 $ jogar_preto imgs,  Translate 25 (-80) $ Scale 2 2 $ sair_zaul imgs,Translate (-35) (-165) $ drawOption "Creditos", Translate (-140) (140) $ Scale (5) (5) $ block imgs, Translate (240) (140) $ Scale (5) (5) $ dude imgs]
 draw (Modojogo (Jogo (x,y) l), jogo, imgs) = undefined
 draw (Modocred VMenu, jogo, imgs) = Pictures drawCredits
 
@@ -89,8 +95,14 @@ time _ w = w
 
 loadImages :: IO Imagens
 loadImages = do
-   backim <- loadBMP "background.bmp"
-   return (Imagens backim)
+   backim <- loadBMP "imgs/background.bmp"
+   blockim <- loadBMP "imgs/block.bmp"
+   dudeim <- loadBMP "imgs/dude.bmp"
+   jogar_pretoim <- loadBMP "imgs/jogar_preto.bmp"
+   jogar_azulim <- loadBMP "imgs/jogar_azul.bmp"
+   sair_pretoim <- loadBMP "imgs/sair_preto.bmp"
+   sair_azulim <- loadBMP "imgs/sair_azul.bmp"
+   return (Imagens backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim)
 
 
 main :: IO ()
