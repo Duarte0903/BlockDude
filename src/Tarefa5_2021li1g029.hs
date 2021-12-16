@@ -44,9 +44,9 @@ fr = 25
 
 draw :: World -> Picture 
 draw (VenceuJogo, jogo, imgs) = Translate (-200) 0 (color red (Text "VENCEU!"))
-draw (Controlador Jogar, jogo, imgs) = Pictures [ background imgs, Color blue $ drawOption "Jogar", Translate (20) (-90) $ drawOption "Sair", Translate (-35) (-165) $ drawOption "Creditos", Translate (-310) (100) $ color orange   $ Text "Block Dude"]
-draw (Controlador Creditos, jogo, imgs) = Pictures [drawOption "Jogar", Translate (20) (-90) $ drawOption "Sair", Translate (-35) (-165) $ Color blue $ drawOption "Creditos", Translate (-310) (100) $ color orange   $ Text "Block Dude"]
-draw (Controlador Sair, jogo, imgs) = Pictures [drawOption "Jogar", Color blue $ Translate (20) (-90) $ drawOption "Sair",Translate (-35) (-165) $ drawOption "Creditos", Translate (-310) (100) $ color orange $ Text "Block Dude"]
+draw (Controlador Jogar, jogo, imgs) = Pictures [background imgs, Color blue $ drawOption "Jogar", Translate (20) (-90) $ drawOption "Sair", Translate (-35) (-165) $ drawOption "Creditos", Translate (-310) (100) $ color orange   $ Text "Block Dude"]
+draw (Controlador Creditos, jogo, imgs) = Pictures [background imgs, drawOption "Jogar", Translate (20) (-90) $ drawOption "Sair", Translate (-35) (-165) $ Color blue $ drawOption "Creditos", Translate (-310) (100) $ color orange   $ Text "Block Dude"]
+draw (Controlador Sair, jogo, imgs) = Pictures [background imgs, drawOption "Jogar", Color blue $ Translate (20) (-90) $ drawOption "Sair",Translate (-35) (-165) $ drawOption "Creditos", Translate (-310) (100) $ color orange $ Text "Block Dude"]
 draw (Modojogo (Jogo (x,y) l), jogo, imgs) = undefined
 draw (Modocred VMenu, jogo, imgs) = Pictures drawCredits
 
@@ -98,3 +98,5 @@ main = do
   imagens <- loadImages 
   let estado = (Controlador Jogar, Jogo (200, 100) [(50, 50), (-250, -100), (-100, -50)], imagens)
   play window white fr estado draw event time 
+ 
+ 
