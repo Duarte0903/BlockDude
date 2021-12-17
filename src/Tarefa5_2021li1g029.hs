@@ -32,7 +32,9 @@ data Imagens = Imagens {
   sair_preto :: Picture,
   sair_zaul :: Picture, 
   creditos_azul :: Picture,
-  creditos_preto :: Picture
+  creditos_preto :: Picture,
+  nomes :: Picture,
+  menu_laranja :: Picture  
   }
 
 type World = (Menu,Jogo,Imagens)
@@ -56,7 +58,7 @@ draw (Controlador Jogar, jogo, imgs) = Pictures [background imgs, drawJogar $ jo
 draw (Controlador Creditos, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_preto imgs, drawCreditos $ creditos_azul imgs, drawBlock $ block imgs, drawDude $ dude imgs]
 draw (Controlador Sair, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_zaul imgs,drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs]
 draw (Modojogo (Jogo (x,y) l), jogo, imgs) = undefined
-draw (Modocred VMenu, jogo, imgs) = Pictures drawCredits
+draw (Modocred VMenu, jogo, imgs) = Pictures [drawNomes $ nomes imgs, drawMenuLaranja $ menu_laranja imgs]
 
 
 drawBlock :: Picture -> Picture
@@ -77,12 +79,11 @@ drawJogar pic = Translate 30 0 $ Scale 2 2 $ pic
 drawSair :: Picture -> Picture
 drawSair pic = Translate 25 (-80) $ Scale 2 2 $ pic 
 
-drawOption :: String -> Picture
-drawOption option = Translate (-50) 0 $ Scale (0.5) (0.5) $ Text option
+drawNomes :: Picture -> Picture 
+drawNomes pic = Translate 80 (-45) $ Scale 2 2 $ pic
 
-
-drawCredits :: [Picture]   -- Desenha a página dos Créditos 
-drawCredits = [Translate (-155) 0 $ Scale (0.5) (0.5) $ Color blue $ Text "Duarte Leitao", Translate (-155) (-70) $ Scale (0.5) (0.5) $ Color blue $ Color blue $ Text "Joao Pereira", Translate (-25) (-300) $ Scale (0.3) (0.3) $ Color red $ Color orange $ Text "Menu"]
+drawMenuLaranja :: Picture -> Picture 
+drawMenuLaranja pic = Translate 50 (-195) $ Scale (0.5) (0.5) $ pic 
 
 
 engine :: (Int,Int) -> [(Int,Int)] -> Jogo
@@ -125,7 +126,9 @@ loadImages = do
    sair_azulim <- loadBMP "imgs/sair_azul.bmp"
    creditos_azulim <- loadBMP "imgs/creditos_azul.bmp"
    creditos_pretoim <- loadBMP "imgs/creditos_preto.bmp"
-   return (Imagens backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim)
+   nomesim <- loadBMP "imgs/nomes.bmp"
+   menu_laranjaim <- loadBMP "imgs/menu_laranja.bmp"
+   return (Imagens backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_laranjaim)
 
 
 main :: IO ()
