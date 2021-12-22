@@ -11,8 +11,6 @@ module Main where
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import Graphics.Gloss.Juicy(loadJuicy)
-import Graphics.Gloss.Data.Color
-import Graphics.Gloss.Data.Display
 
 
 data Jogo = Jogo (Int,Int) [(Int,Int)]
@@ -54,36 +52,39 @@ fr = 25
 
 draw :: World -> Picture 
 draw (VenceuJogo, jogo, imgs) = Translate (-200) 0 (color red (Text "VENCEU!"))
-draw (Controlador Jogar, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_azul imgs, drawSair $ sair_preto imgs, drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs]
-draw (Controlador Creditos, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_preto imgs, drawCreditos $ creditos_azul imgs, drawBlock $ block imgs, drawDude $ dude imgs]
-draw (Controlador Sair, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_zaul imgs,drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs]
+draw (Controlador Jogar, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_azul imgs, drawSair $ sair_preto imgs, drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs]
+draw (Controlador Creditos, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_preto imgs, drawCreditos $ creditos_azul imgs, drawBlock $ block imgs, drawDude $ dude imgs]
+draw (Controlador Sair, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_zaul imgs,drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs]
 draw (Modojogo (Jogo (x,y) l), jogo, imgs) = undefined
-draw (Modocred VMenu, jogo, imgs) = Pictures [drawNomes $ nomes imgs, drawMenuLaranja $ menu_laranja imgs]
+draw (Modocred VMenu, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNomes $ nomes imgs, drawMenuLaranja $ menu_laranja imgs]
 
+
+drawBackground :: Picture -> Picture 
+drawBackground pic = pic
 
 drawBlock :: Picture -> Picture
-drawBlock pic = Translate (-140) (140) $ Scale (5) (5) $ pic
+drawBlock pic = Translate (-140) 140 $ Scale 5 5  pic
 
 drawMenu :: Picture -> Picture 
-drawMenu pic = Translate (-25) (-300) $ Scale 2 2 $ pic
+drawMenu pic = Translate (-25) (-300) $ Scale 2 2  pic
 
 drawDude :: Picture -> Picture
-drawDude pic = Translate (240) (140) $ Scale (5) (5) $ pic
+drawDude pic = Translate 240 140 $ Scale 5 5  pic
 
 drawCreditos :: Picture -> Picture
-drawCreditos pic = Translate (55) (-180) $ Scale (2) (2) $ pic
+drawCreditos pic = Translate 55 (-180) $ Scale 2 2 pic
 
 drawJogar :: Picture -> Picture
-drawJogar pic = Translate 30 0 $ Scale 2 2 $ pic 
+drawJogar pic = Translate 30 0 $ Scale 2 2 pic 
 
 drawSair :: Picture -> Picture
-drawSair pic = Translate 25 (-80) $ Scale 2 2 $ pic 
+drawSair pic = Translate 25 (-80) $ Scale 2 2 pic 
 
 drawNomes :: Picture -> Picture 
-drawNomes pic = Translate 80 (-45) $ Scale 2 2 $ pic
+drawNomes pic = Translate (-80) 15 $ Scale 2 2  pic
 
 drawMenuLaranja :: Picture -> Picture 
-drawMenuLaranja pic = Translate 50 (-195) $ Scale (0.5) (0.5) $ pic 
+drawMenuLaranja pic = Translate 50 (-195) $ Scale 0.5 0.5 pic 
 
 
 engine :: (Int,Int) -> [(Int,Int)] -> Jogo
@@ -117,7 +118,7 @@ time _ w = w
 
 loadImages :: IO Imagens
 loadImages = do
-   backim <- loadBMP "imgs/background.bmp"
+   backim <- loadBMP "imgs/background.bmp"       -- Criado por: Zeyu Ren 任泽宇 | Publicado em: opengameart.org
    blockim <- loadBMP "imgs/block.bmp"
    dudeim <- loadBMP "imgs/dude.bmp"
    jogar_pretoim <- loadBMP "imgs/jogar_preto.bmp"
