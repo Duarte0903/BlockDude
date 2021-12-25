@@ -8,6 +8,7 @@ Módulo para a realização da Tarefa 5 do projeto de LI1 em 2021/22.
 -}
 module Main where
 
+
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
 import Graphics.Gloss.Juicy(loadJuicy)
@@ -24,6 +25,11 @@ data Cred = VMenu
 data Mapas = Mapa1 | Mapa2 | Mapa3 | Voltar
 
 data Imagens = Imagens { 
+  bloco :: Picture,
+  caixa :: Picture,
+  porta :: Picture,
+  jogador :: Picture,
+  jogador_com_caixa :: Picture,    
   background :: Picture,
   block :: Picture,
   dude :: Picture,
@@ -46,16 +52,10 @@ data Imagens = Imagens {
 
 type World = (Menu,Jogo,Imagens)
 
-type Creditos = String 
-
-
 window :: Display 
-window = InWindow
-  "Block Dude"         -- Nome da Janela
-  (1366,768)           -- Dimensão da Janela
-  (683,384)            -- Posição no ecrã 
+window = FullScreen           
 
-fr :: Int              -- Frame Rate
+fr :: Int              
 fr = 25
 
 
@@ -107,7 +107,7 @@ drawNivel3 pic = Translate 40 (-160) pic
 
 
 engine :: (Int,Int) -> [(Int,Int)] -> Jogo
-engine p l = Jogo p (filter (p/=) l)
+engine p l = Jogo p (filter (p/=) l)             -- !!! definir todos os movimentos na tarefa 4 !!!
 
 
 event :: Event -> World -> World
@@ -140,12 +140,19 @@ event _ w = w
 
 
 
+
+
 time :: Float -> World -> World
 time _ w = w 
 
 
 loadImages :: IO Imagens
 loadImages = do
+   blocoim <- loadBMP "pecas/bloco.bmp"
+   caixaim <- loadBMP "pecas/caixa.bmp"
+   portaim <- loadBMP "pecas/porta.bmp"
+   jogadorim <- loadBMP "pecas/jogador.bmp"
+   jogador_com_caixaim <- loadBMP "pecas/jogador_com_caixa.bmp"
    backim <- loadBMP "imgs/background.bmp"       -- Criado por: Zeyu Ren 任泽宇 | Publicado em: opengameart.org
    blockim <- loadBMP "imgs/block.bmp"
    dudeim <- loadBMP "imgs/dude.bmp"
@@ -164,7 +171,7 @@ loadImages = do
    nivel2_azulim <- loadBMP "imgs/nivel2_azul.bmp"
    nivel3_pretoim <- loadBMP "imgs/nivel3_preto.bmp"
    nivel3_azulim <- loadBMP "imgs/nivel3_azul.bmp"
-   return (Imagens backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
+   return (Imagens blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
 
 
 main :: IO ()
