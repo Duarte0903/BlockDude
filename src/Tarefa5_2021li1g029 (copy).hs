@@ -13,6 +13,7 @@ import Mapas
 import Tarefa4_2021li1g029
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
+import Data.Maybe
 
 
 
@@ -25,7 +26,8 @@ data Cred = VMenu
 
 data Mapas = Mapa1 | Mapa2 | Mapa3 | Voltar
 
-data Imagens = Imagens { 
+data Imagens = Imagens {
+  vazio :: Picture,  
   bloco :: Picture,
   caixa :: Picture,
   porta :: Picture,
@@ -56,6 +58,7 @@ type World = (Menu,Jogo,Imagens)
 
 loadImages :: IO Imagens
 loadImages = do
+   vazioim <- loadBMP "pecas/vazio.bmp"
    blocoim <- loadBMP "pecas/bloco.bmp"
    caixaim <- loadBMP "pecas/caixa.bmp"
    portaim <- loadBMP "pecas/porta.bmp"
@@ -79,7 +82,7 @@ loadImages = do
    nivel2_azulim <- loadBMP "imgs/nivel2_azul.bmp"
    nivel3_pretoim <- loadBMP "imgs/nivel3_preto.bmp"
    nivel3_azulim <- loadBMP "imgs/nivel3_azul.bmp"
-   return (Imagens blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
+   return (Imagens vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
 
 
 window :: Display 
@@ -99,6 +102,7 @@ draw (ModoMap Mapa1, jogo, imgs) = Pictures [drawBackground $ background imgs, d
 draw (ModoMap Mapa2, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_azul imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Mapa3, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_azul imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Voltar, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_laranja imgs]
+draw (Modojogo (Jogo mapateste (Jogador (0,0) Oeste False)), jogo, imgs) = Pictures ([drawBackground $ background imgs] ++ (desenhaMapa mapateste (0,0) imgs)) 
 
 
 drawBackground :: Picture -> Picture 
@@ -139,16 +143,39 @@ l :: Float  -- lado dos blocos e caixas
 l = 32
 
 
-drawPeca :: Float -> Float -> Peca -> Imagens -> Picture 
-drawPeca x y peca imagem | peca == Bloco = 
-        
+desenhaMapa :: Mapa -> (Int,Int) -> Imagens -> [Picture]
+desenhaMapa [] _ _ = []
+desenhaMapa (l:ls) (x,y) imagens = desenhaLinha l (x,y) imagens ++ desenhaMapa ls (0,y+1) imagens
+
+desenhaLinha :: [Peca] -> (Int,Int) -> Imagens -> [Picture]
+desenhaLinha [] _ _ = []
+desenhaLinha (p:ps) (x,y) imagens | p == Vazio = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) $ vazio imagens] ++ desenhaLinha ps (x+1,y) imagens
+                                  | p == Bloco = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) $ bloco imagens] ++ desenhaLinha ps (x+1,y) imagens
+                                  | p == Porta = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) $ porta imagens] ++ desenhaLinha ps (x+1,y) imagens
+                                  | p == Caixa = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) $ porta imagens] ++ desenhaLinha ps (x+1,y) imagens
+
+                                   where i = fromIntegral (x*60)
+                                         j = fromIntegral (-y*60)
+
+{-
+desenhaJogadorLinha :: [Peca] -> (Int,Int) -> Jogador -> Int -> Imagens -> [Picture]
+desenhaJogadorLinha [] _ _ _ _= []
+desenhaJogadorLinha (l:ls) (x,y) (Jogador (a,b) c d) n imagens | x == a && y == b && n == 0 && c == Este = [Translate (i-270) (j+268) $ Scale (0.3) (0.3)  jogador imagens]
+                                                               | x == a && y == b && n == 0 && c == Oeste = [Translate (i-270) (j+268) $ Scale (0.3) (0.3)  jogador imagens]
+                                                               | x == a && y == b && n == 1 && c == Este = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) (fromJust (lookup Personagem2Estes imagens))]
+                                                               | x == a && y == b && n == 1 && c == Oeste = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) (fromJust (lookup Personagem2Oestes imagens))]
+                                                               | x == a && y == b && n == 2 && c == Este = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) (fromJust (lookup Personagem3Estes imagens))]
+                                                               | x == a && y == b && n == 2 && c == Oeste = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) (fromJust (lookup Personagem3Oestes imagens))]
+                                                               | otherwise = desenhaJogadorLinha ls (x+1,y) (Jogador (a,b) c d) n imagens
+     where
+         i = fromIntegral (x*60)
+         j = fromIntegral (-y*60)
 
 
-drawLinha :: Float -> Float -> [Peca] -> Imagens -> Picture 
-drawLinha x y (h:t) textures = peca ++ resto 
-         where peca = drawPeca x y h textures
-               resto = drawLinha (x+l) y t textures
-
+desenhaJogadorMapa :: Mapa -> (Int,Int) -> Jogador -> Int -> Imagens -> [Picture]
+desenhaJogadorMapa [] _ _ _ _ = []
+desenhaJogadorMapa (l:ls) (x,y) (Jogador (a,b) c d) n imagens = desenhaJogadorLinha l (x,y) (Jogador (a,b) c d) n imagens ++ desenhaJogadorMapa ls (x,y+1) (Jogador (a,b) c d) n imagens
+-}
 
 engine :: Jogo -> [Movimento] -> Jogo
 engine = correrMovimentos     -- !!! definir todos os movimentos na tarefa 4 !!!
@@ -175,7 +202,7 @@ event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (Mod
 event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (ModoMap Mapa3, jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (Controlador Jogar, jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo, jogo, imgs) = (Controlador Jogar, jogo, imgs)
-event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (Modojogo (Jogo mapa1 (Jogador (0,0) Oeste False)), jogo, imgs)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (Modojogo (Jogo mapateste (Jogador (0,0) Oeste False)), jogo, imgs)
 
 event _ w = w
 
