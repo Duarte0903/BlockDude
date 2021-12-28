@@ -149,10 +149,10 @@ desenhaMapa (l:ls) (x,y) imagens = desenhaLinha l (x,y) imagens ++ desenhaMapa l
 
 desenhaLinha :: [Peca] -> (Int,Int) -> Imagens -> [Picture]
 desenhaLinha [] _ _ = []
-desenhaLinha (p:ps) (x,y) imagens | p == Vazio = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) $ vazio imagens] ++ desenhaLinha ps (x+1,y) imagens
-                                  | p == Bloco = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) $ bloco imagens] ++ desenhaLinha ps (x+1,y) imagens
-                                  | p == Porta = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) $ porta imagens] ++ desenhaLinha ps (x+1,y) imagens
-                                  | p == Caixa = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) $ porta imagens] ++ desenhaLinha ps (x+1,y) imagens
+desenhaLinha (p:ps) (x,y) imagens | p == Vazio = [Translate (i-270) (j+268) $ Scale (6) (6) $ vazio imagens] ++ desenhaLinha ps (x+1,y) imagens
+                                  | p == Bloco = [Translate (i-270) (j+268) $ Scale (6) (6) $ bloco imagens] ++ desenhaLinha ps (x+1,y) imagens
+                                  | p == Porta = [Translate (i-270) (j+268) $ Scale (6) (6) $ porta imagens] ++ desenhaLinha ps (x+1,y) imagens
+                                  | p == Caixa = [Translate (i-270) (j+268) $ Scale (6) (6) $ caixa imagens] ++ desenhaLinha ps (x+1,y) imagens
 
                                    where i = fromIntegral (x*60)
                                          j = fromIntegral (-y*60)
