@@ -18,13 +18,15 @@ import Data.Maybe
 
 
 
-data Menu = Controlador Opcoes | Modojogo Jogo | VenceuJogo | Modocred Cred | ModoMap Mapas
+data Menu = Controlador Opcoes | Modojogo Jogo | VenceuJogo | Modocred Cred | ModoMap Mapas | MenuPause Pause
  
 data Opcoes = Jogar | Creditos | Sair 
 
 data Cred = VMenu
 
 data Mapas = Mapa1 | Mapa2 | Mapa3 | Voltar
+
+data Pause = Voltar2 | Continuar 
 
 data Imagens = Imagens {
   vazio :: Picture,  
@@ -45,7 +47,9 @@ data Imagens = Imagens {
   nomes :: Picture,
   menu_preto :: Picture, 
   menu_laranja :: Picture,
-  nivel1_preto :: Picture, 
+  nivel1_preto :: Picture,
+  continuar_azul :: Picture,
+  continuar_laranja :: Picture,   
   nivel1_azul :: Picture,
   nivel2_preto :: Picture,
   nivel2_azul :: Picture,
@@ -76,13 +80,15 @@ loadImages = do
    nomesim <- loadBMP "imgs/nomes.bmp"
    menu_pretoim <- loadBMP "imgs/menu_preto.bmp"
    menu_laranjaim <- loadBMP "imgs/menu_laranja.bmp"
+   continuar_azulim <- loadBMP "imgs/continuar_azul.bmp"
+   continuar_laranjaim <- loadBMP "imgs/continuar_laranja.bmp"
    nivel1_pretoim <- loadBMP "imgs/nivel1_preto.bmp"
    nivel1_azulim <- loadBMP "imgs/nivel1_azul.bmp"
    nivel2_pretoim <- loadBMP "imgs/nivel2_preto.bmp"
    nivel2_azulim <- loadBMP "imgs/nivel2_azul.bmp"
    nivel3_pretoim <- loadBMP "imgs/nivel3_preto.bmp"
    nivel3_azulim <- loadBMP "imgs/nivel3_azul.bmp"
-   return (Imagens vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
+   return (Imagens vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim continuar_azulim continuar_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
 
 
 window :: Display 
@@ -102,7 +108,7 @@ draw (ModoMap Mapa1, jogo, imgs) = Pictures [drawBackground $ background imgs, d
 draw (ModoMap Mapa2, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_azul imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Mapa3, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_azul imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Voltar, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_laranja imgs]
-draw (Modojogo (Jogo mapateste (Jogador (0,0) Oeste False)), jogo, imgs) = Pictures ([drawBackground $ background imgs] ++ (desenhaMapa mapateste (0,0) imgs)) 
+draw (Modojogo (Jogo mapateste (Jogador (0,0) Oeste False)), jogo, imgs) = Pictures ([drawBackground $ background imgs] ++ (desenhaMapa mapateste (0,0) imgs) ++ (desenhaJogadorMapa mapateste (0,0) (Jogador (10,6) Oeste False) imgs)) 
 
 
 drawBackground :: Picture -> Picture 
@@ -138,6 +144,10 @@ drawNivel2 pic = Translate 40 (-80) pic
 drawNivel3 :: Picture -> Picture 
 drawNivel3 pic = Translate 40 (-160) pic
 
+drawContinuar :: Picture -> Picture 
+drawContinuar pic = Translate 100 (0) $ Scale 1 1 pic 
+
+
 
 l :: Float  -- lado dos blocos e caixas
 l = 32
@@ -157,25 +167,25 @@ desenhaLinha (p:ps) (x,y) imagens | p == Vazio = [Translate (i-270) (j+268) $ Sc
                                    where i = fromIntegral (x*60)
                                          j = fromIntegral (-y*60)
 
-{-
-desenhaJogadorLinha :: [Peca] -> (Int,Int) -> Jogador -> Int -> Imagens -> [Picture]
-desenhaJogadorLinha [] _ _ _ _= []
-desenhaJogadorLinha (l:ls) (x,y) (Jogador (a,b) c d) n imagens | x == a && y == b && n == 0 && c == Este = [Translate (i-270) (j+268) $ Scale (0.3) (0.3)  jogador imagens]
-                                                               | x == a && y == b && n == 0 && c == Oeste = [Translate (i-270) (j+268) $ Scale (0.3) (0.3)  jogador imagens]
-                                                               | x == a && y == b && n == 1 && c == Este = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) (fromJust (lookup Personagem2Estes imagens))]
-                                                               | x == a && y == b && n == 1 && c == Oeste = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) (fromJust (lookup Personagem2Oestes imagens))]
-                                                               | x == a && y == b && n == 2 && c == Este = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) (fromJust (lookup Personagem3Estes imagens))]
-                                                               | x == a && y == b && n == 2 && c == Oeste = [Translate (i-270) (j+268) $ Scale (0.3) (0.3) (fromJust (lookup Personagem3Oestes imagens))]
-                                                               | otherwise = desenhaJogadorLinha ls (x+1,y) (Jogador (a,b) c d) n imagens
+
+desenhaJogadorLinha :: [Peca] -> (Int,Int) -> Jogador -> Imagens -> [Picture]
+desenhaJogadorLinha [] _ _ _= []
+desenhaJogadorLinha (l:ls) (x,y) (Jogador (a,b) c d) imagens | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (5.8) (5.8) $ jogador imagens]
+                                                             | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
+                                                             | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (6) (6) $ jogador imagens]
+                                                             | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
+                                                             | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (6) (6) $ jogador imagens]
+                                                             | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
+                                                             | otherwise = desenhaJogadorLinha ls (x+1,y) (Jogador (a,b) c d) imagens
      where
          i = fromIntegral (x*60)
          j = fromIntegral (-y*60)
 
 
-desenhaJogadorMapa :: Mapa -> (Int,Int) -> Jogador -> Int -> Imagens -> [Picture]
-desenhaJogadorMapa [] _ _ _ _ = []
-desenhaJogadorMapa (l:ls) (x,y) (Jogador (a,b) c d) n imagens = desenhaJogadorLinha l (x,y) (Jogador (a,b) c d) n imagens ++ desenhaJogadorMapa ls (x,y+1) (Jogador (a,b) c d) n imagens
--}
+desenhaJogadorMapa :: Mapa -> (Int,Int) -> Jogador -> Imagens -> [Picture]
+desenhaJogadorMapa [] _ _ _ = []
+desenhaJogadorMapa (l:ls) (x,y) (Jogador (a,b) c d) imagens = desenhaJogadorLinha l (x,y) (Jogador (a,b) c d) imagens ++ desenhaJogadorMapa ls (x,y+1) (Jogador (a,b) c d) imagens
+
 
 engine :: Jogo -> [Movimento] -> Jogo
 engine = correrMovimentos     -- !!! definir todos os movimentos na tarefa 4 !!!
