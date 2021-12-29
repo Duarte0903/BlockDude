@@ -1,4 +1,4 @@
-{- |
+  {- |
 Module      : Tarefa5_2021li1g029
 Description : Aplicação Gráfica
 Copyright   : Duarte Leitão <a100550@alunos.uminho.pt>;
@@ -8,15 +8,17 @@ Módulo para a realização da Tarefa 5 do projeto de LI1 em 2021/22.
 -}
 module Main where
 
-
+import LI12122
+import Mapas 
+import Tarefa4_2021li1g029
 import Graphics.Gloss
 import Graphics.Gloss.Interface.Pure.Game
-import Graphics.Gloss.Juicy(loadJuicy)
 
 
-data Jogo = Jogo (Int,Int) [(Int,Int)]
 
-data Menu = Controlador Opcoes | Modojogo Jogo | VenceuJogo | Modocred Cred | ModoMap Mapas
+
+
+data Menu = Controlador Opcoes | Modojogo Jogo | VenceuJogo | Modocred Cred | ModoMap Mapas | MenuPause Pause
  
 data Opcoes = Jogar | Creditos | Sair 
 
@@ -24,7 +26,10 @@ data Cred = VMenu
 
 data Mapas = Mapa1 | Mapa2 | Mapa3 | Voltar
 
-data Imagens = Imagens { 
+data Pause = Voltar2 | Continuar 
+
+data Imagens = Imagens {
+  vazio :: Picture,  
   bloco :: Picture,
   caixa :: Picture,
   porta :: Picture,
@@ -42,7 +47,7 @@ data Imagens = Imagens {
   nomes :: Picture,
   menu_preto :: Picture, 
   menu_laranja :: Picture,
-  nivel1_preto :: Picture, 
+  nivel1_preto :: Picture,   
   nivel1_azul :: Picture,
   nivel2_preto :: Picture,
   nivel2_azul :: Picture,
@@ -51,6 +56,36 @@ data Imagens = Imagens {
   }
 
 type World = (Menu,Jogo,Imagens)
+
+
+loadImages :: IO Imagens
+loadImages = do
+   vazioim <- loadBMP "pecas/vazio.bmp"
+   blocoim <- loadBMP "pecas/bloco.bmp"
+   caixaim <- loadBMP "pecas/caixa.bmp"
+   portaim <- loadBMP "pecas/porta.bmp"
+   jogadorim <- loadBMP "pecas/jogador.bmp"
+   jogador_com_caixaim <- loadBMP "pecas/jogador_com_caixa.bmp"
+   backim <- loadBMP "imgs/background.bmp"       -- Criado por: Zeyu Ren 任泽宇 | Publicado em: opengameart.org
+   blockim <- loadBMP "imgs/block.bmp"
+   dudeim <- loadBMP "imgs/dude.bmp"
+   jogar_pretoim <- loadBMP "imgs/jogar_preto.bmp"
+   jogar_azulim <- loadBMP "imgs/jogar_azul.bmp"
+   sair_pretoim <- loadBMP "imgs/sair_preto.bmp"
+   sair_azulim <- loadBMP "imgs/sair_azul.bmp"
+   creditos_azulim <- loadBMP "imgs/creditos_azul.bmp"
+   creditos_pretoim <- loadBMP "imgs/creditos_preto.bmp"
+   nomesim <- loadBMP "imgs/nomes.bmp"
+   menu_pretoim <- loadBMP "imgs/menu_preto.bmp"
+   menu_laranjaim <- loadBMP "imgs/menu_laranja.bmp"
+   nivel1_pretoim <- loadBMP "imgs/nivel1_preto.bmp"
+   nivel1_azulim <- loadBMP "imgs/nivel1_azul.bmp"
+   nivel2_pretoim <- loadBMP "imgs/nivel2_preto.bmp"
+   nivel2_azulim <- loadBMP "imgs/nivel2_azul.bmp"
+   nivel3_pretoim <- loadBMP "imgs/nivel3_preto.bmp"
+   nivel3_azulim <- loadBMP "imgs/nivel3_azul.bmp"
+   return (Imagens vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
+
 
 window :: Display 
 window = FullScreen           
@@ -64,12 +99,12 @@ draw (VenceuJogo, jogo, imgs) = Translate (-200) 0 (color red (Text "VENCEU!"))
 draw (Controlador Jogar, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_azul imgs, drawSair $ sair_preto imgs, drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs]
 draw (Controlador Creditos, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_preto imgs, drawCreditos $ creditos_azul imgs, drawBlock $ block imgs, drawDude $ dude imgs]
 draw (Controlador Sair, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_zaul imgs,drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs]
-draw (Modojogo (Jogo (x,y) l), jogo, imgs) = undefined
 draw (Modocred VMenu, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNomes $ nomes imgs, drawMenu $ menu_laranja imgs]
 draw (ModoMap Mapa1, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_azul imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Mapa2, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_azul imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Mapa3, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_azul imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Voltar, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_laranja imgs]
+draw (Modojogo (Jogo mapateste (Jogador (x,y) d c)), jogo, imgs) = Pictures ([drawBackground $ background imgs] ++ (desenhaMapa mapateste (0,0) imgs) ++ (desenhaJogadorMapa mapateste (0,0) (Jogador (x,y) d c) imgs)) 
 
 
 drawBackground :: Picture -> Picture 
@@ -103,11 +138,49 @@ drawNivel2 :: Picture -> Picture
 drawNivel2 pic = Translate 40 (-80) pic
 
 drawNivel3 :: Picture -> Picture 
-drawNivel3 pic = Translate 40 (-160) pic
+drawNivel3 pic = Translate 40 (-160) pic 
 
 
-engine :: (Int,Int) -> [(Int,Int)] -> Jogo
-engine p l = Jogo p (filter (p/=) l)             -- !!! definir todos os movimentos na tarefa 4 !!!
+l :: Float  -- lado dos blocos e caixas
+l = 32
+
+
+desenhaMapa :: Mapa -> (Int,Int) -> Imagens -> [Picture]
+desenhaMapa [] _ _ = []
+desenhaMapa (l:ls) (x,y) imagens = desenhaLinha l (x,y) imagens ++ desenhaMapa ls (0,y+1) imagens
+
+desenhaLinha :: [Peca] -> (Int,Int) -> Imagens -> [Picture]
+desenhaLinha [] _ _ = []
+desenhaLinha (p:ps) (x,y) imagens | p == Vazio = [Translate (i-270) (j+268) $ Scale (6) (6) $ vazio imagens] ++ desenhaLinha ps (x+1,y) imagens
+                                  | p == Bloco = [Translate (i-270) (j+268) $ Scale (6) (6) $ bloco imagens] ++ desenhaLinha ps (x+1,y) imagens
+                                  | p == Porta = [Translate (i-270) (j+268) $ Scale (6) (6) $ porta imagens] ++ desenhaLinha ps (x+1,y) imagens
+                                  | p == Caixa = [Translate (i-270) (j+268) $ Scale (6) (6) $ caixa imagens] ++ desenhaLinha ps (x+1,y) imagens
+
+                                   where i = fromIntegral (x*60)
+                                         j = fromIntegral (-y*60)
+
+
+desenhaJogadorLinha :: [Peca] -> (Int,Int) -> Jogador -> Imagens -> [Picture]
+desenhaJogadorLinha [] _ _ _= []
+desenhaJogadorLinha (l:ls) (x,y) (Jogador (a,b) c d) imagens | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
+                                                             | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
+                                                             | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
+                                                             | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
+                                                             | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
+                                                             | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
+                                                             | otherwise = desenhaJogadorLinha ls (x+1,y) (Jogador (a,b) c d) imagens
+     where
+         i = fromIntegral (x*60)
+         j = fromIntegral (-y*60)
+
+
+desenhaJogadorMapa :: Mapa -> (Int,Int) -> Jogador -> Imagens -> [Picture]
+desenhaJogadorMapa [] _ _ _ = []
+desenhaJogadorMapa (l:ls) (x,y) (Jogador (a,b) c d) imagens = desenhaJogadorLinha l (x,y) (Jogador (a,b) c d) imagens ++ desenhaJogadorMapa ls (x,y+1) (Jogador (a,b) c d) imagens
+
+
+engine :: Jogo -> Movimento -> Jogo
+engine = moveJogador     -- !!! definir todos os movimentos na tarefa 4 !!!
 
 
 event :: Event -> World -> World
@@ -131,13 +204,10 @@ event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (Mod
 event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (ModoMap Mapa3, jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (Controlador Jogar, jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo, jogo, imgs) = (Controlador Jogar, jogo, imgs)
-event _ (Modojogo (Jogo (x, y) []), jogo, imgs) = (VenceuJogo, jogo, imgs)
-event (EventKey (SpecialKey KeyUp) Down _ _) (Modojogo (Jogo (x, y) l), jogo, imgs) = (Modojogo $ engine (x + 50, y + 50) l, jogo, imgs)
-event (EventKey (SpecialKey KeyDown) Down _ _) (Modojogo (Jogo (x, y) l), jogo, imgs) = (Modojogo $ engine (x -50, y - 50) l, jogo, imgs)
-event (EventKey (SpecialKey KeyLeft) Down _ _) (Modojogo (Jogo (x, y) l), jogo, imgs) = (Modojogo $ engine (x - 50, y) l, jogo, imgs)
-event (EventKey (SpecialKey KeyRight) Down _ _) (Modojogo (Jogo (x, y) l), jogo, imgs) = (Modojogo $ engine (x + 50, y) l, jogo, imgs)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (Modojogo (Jogo mapateste (Jogador (10,6) Oeste False)), jogo, imgs)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa2, jogo, imgs) = (Modojogo (Jogo mapa1  (Jogador (10,6) Oeste False)), jogo, imgs)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) Oeste False)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) Oeste False)) AndarEsquerda), jogo, imagens)
 event _ w = w
-
 
 
 
@@ -146,38 +216,10 @@ time :: Float -> World -> World
 time _ w = w 
 
 
-loadImages :: IO Imagens
-loadImages = do
-   blocoim <- loadBMP "pecas/bloco.bmp"
-   caixaim <- loadBMP "pecas/caixa.bmp"
-   portaim <- loadBMP "pecas/porta.bmp"
-   jogadorim <- loadBMP "pecas/jogador.bmp"
-   jogador_com_caixaim <- loadBMP "pecas/jogador_com_caixa.bmp"
-   backim <- loadBMP "imgs/background.bmp"       -- Criado por: Zeyu Ren 任泽宇 | Publicado em: opengameart.org
-   blockim <- loadBMP "imgs/block.bmp"
-   dudeim <- loadBMP "imgs/dude.bmp"
-   jogar_pretoim <- loadBMP "imgs/jogar_preto.bmp"
-   jogar_azulim <- loadBMP "imgs/jogar_azul.bmp"
-   sair_pretoim <- loadBMP "imgs/sair_preto.bmp"
-   sair_azulim <- loadBMP "imgs/sair_azul.bmp"
-   creditos_azulim <- loadBMP "imgs/creditos_azul.bmp"
-   creditos_pretoim <- loadBMP "imgs/creditos_preto.bmp"
-   nomesim <- loadBMP "imgs/nomes.bmp"
-   menu_pretoim <- loadBMP "imgs/menu_preto.bmp"
-   menu_laranjaim <- loadBMP "imgs/menu_laranja.bmp"
-   nivel1_pretoim <- loadBMP "imgs/nivel1_preto.bmp"
-   nivel1_azulim <- loadBMP "imgs/nivel1_azul.bmp"
-   nivel2_pretoim <- loadBMP "imgs/nivel2_preto.bmp"
-   nivel2_azulim <- loadBMP "imgs/nivel2_azul.bmp"
-   nivel3_pretoim <- loadBMP "imgs/nivel3_preto.bmp"
-   nivel3_azulim <- loadBMP "imgs/nivel3_azul.bmp"
-   return (Imagens blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
-
-
 main :: IO ()
 main = do
   imagens <- loadImages 
-  let estado = (Controlador Jogar, Jogo (200, 100) [(50, 50), (-250, -100), (-100, -50)], imagens)
+  let estado = (Controlador Jogar, Jogo mapa1 (Jogador (0,0) Oeste False), imagens)
   play window white fr estado draw event time 
  
  
