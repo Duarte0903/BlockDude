@@ -112,7 +112,8 @@ draw (ModoMap Mapa1, jogo, imgs) = Pictures [drawBackground $ background imgs, d
 draw (ModoMap Mapa2, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_azul imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Mapa3, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_azul imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Voltar, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_laranja imgs]
-draw (Modojogo (Jogo mapateste (Jogador (x,y) d c)), jogo, imgs) = Pictures ([drawBackground $ background imgs] ++ (desenhaMapa mapateste (0,0) imgs) ++ (desenhaJogadorMapa mapateste (0,0) (Jogador (x,y) d c) imgs)) 
+draw (Modojogo (Jogo m (Jogador (x,y) d c)), jogo, imgs) = Pictures ([drawBackground $ background imgs] ++ (desenhaMapa m (0,0) imgs) ++ (desenhaJogadorMapa m (0,0) (Jogador (x,y) d c) imgs)) 
+-- draw (Modojogo (Jogo mapa2  (Jogador (10,6) d c)), jogo, imgs) = Pictures ([drawBackground $ background imgs] ++ (desenhaMapa mapa2 (0,0) imgs) ++ (desenhaJogadorMapa mapa2 (0,0) (Jogador (x,y) d c) imgs)) 
 
 
 drawBackground :: Picture -> Picture 
@@ -170,12 +171,12 @@ desenhaLinha (p:ps) (x,y) imagens | p == Vazio = [Translate (i-270) (j+268) $ Sc
 
 desenhaJogadorLinha :: [Peca] -> (Int,Int) -> Jogador -> Imagens -> [Picture]
 desenhaJogadorLinha [] _ _ _= []
-desenhaJogadorLinha (l:ls) (x,y) (Jogador (a,b) c d) imagens | x == a && y == b && c == Este && d == False = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador_este imagens]
-                                                             | x == a && y == b && c == Oeste && d == False = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador_oeste imagens]
-                                                             | x == a && y == b && c == Este && d == True = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador_com_caixa_este imagens]
-                                                             | x == a && y == b && c == Oeste && d == True = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador_com_caixa_oeste imagens]
-                                                             | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
-                                                             | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
+desenhaJogadorLinha (l:ls) (x,y) (Jogador (a,b) c d) imagens | x == a && y == b && c == Este && d == False = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_este imagens]
+                                                             | x == a && y == b && c == Oeste && d == False = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_oeste imagens]
+                                                             | x == a && y == b && c == Este && d == True = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_com_caixa_este imagens]
+                                                             | x == a && y == b && c == Oeste && d == True = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_com_caixa_oeste imagens]
+                                                             | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador imagens]
+                                                             | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador imagens]
                                                              | otherwise = desenhaJogadorLinha ls (x+1,y) (Jogador (a,b) c d) imagens
      where
          i = fromIntegral (x*60)
@@ -212,9 +213,10 @@ event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (Mod
 event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (ModoMap Mapa3, jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (Controlador Jogar, jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo, jogo, imgs) = (Controlador Jogar, jogo, imgs)
-event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (Modojogo (Jogo mapateste (Jogador (10,6) Oeste False)), jogo, imgs)
-event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa2, jogo, imgs) = (Modojogo (Jogo mapa1  (Jogador (10,6) Oeste False)), jogo, imgs)
-event (EventKey (SpecialKey KeyLeft) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) Oeste False)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) Oeste False)) AndarEsquerda), jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (Modojogo (Jogo mapa1 (Jogador (10,6) Oeste False)), jogo, imgs)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa2, jogo, imgs) = (Modojogo (Jogo mapa2  (Jogador (0,8) Este False)), jogo, imgs)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa3, jogo, imgs) = (Modojogo (Jogo mapa3  (Jogador (1,6) Este False)), jogo, imgs)
+event (EventKey (SpecialKey KeyLeft) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) c d)) AndarEsquerda), jogo, imagens)
 event _ w = w
 
 
