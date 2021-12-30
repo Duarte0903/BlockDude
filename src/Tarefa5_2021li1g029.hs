@@ -29,6 +29,10 @@ data Mapas = Mapa1 | Mapa2 | Mapa3 | Voltar
 data Pause = Voltar2 | Continuar 
 
 data Imagens = Imagens {
+  jogador_este :: Picture,
+  jogador_oeste :: Picture,
+  jogador_com_caixa_este :: Picture,
+  jogador_com_caixa_oeste :: Picture,   
   vazio :: Picture,  
   bloco :: Picture,
   caixa :: Picture,
@@ -60,6 +64,10 @@ type World = (Menu,Jogo,Imagens)
 
 loadImages :: IO Imagens
 loadImages = do
+   jogador_esteim <- loadBMP "pecas/jogador_este.bmp"
+   jogador_oesteim <- loadBMP "pecas/jogador_oeste.bmp"
+   jogador_com_caixa_esteim <- loadBMP "pecas/jogador_com_caixa_este.bmp"
+   jogador_com_caixa_oesteim <- loadBMP "pecas/jogador_com_caixa_oeste.bmp"
    vazioim <- loadBMP "pecas/vazio.bmp"
    blocoim <- loadBMP "pecas/bloco.bmp"
    caixaim <- loadBMP "pecas/caixa.bmp"
@@ -84,7 +92,7 @@ loadImages = do
    nivel2_azulim <- loadBMP "imgs/nivel2_azul.bmp"
    nivel3_pretoim <- loadBMP "imgs/nivel3_preto.bmp"
    nivel3_azulim <- loadBMP "imgs/nivel3_azul.bmp"
-   return (Imagens vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
+   return (Imagens jogador_esteim jogador_oesteim jogador_com_caixa_esteim jogador_com_caixa_oesteim vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
 
 
 window :: Display 
@@ -162,10 +170,10 @@ desenhaLinha (p:ps) (x,y) imagens | p == Vazio = [Translate (i-270) (j+268) $ Sc
 
 desenhaJogadorLinha :: [Peca] -> (Int,Int) -> Jogador -> Imagens -> [Picture]
 desenhaJogadorLinha [] _ _ _= []
-desenhaJogadorLinha (l:ls) (x,y) (Jogador (a,b) c d) imagens | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
-                                                             | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
-                                                             | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
-                                                             | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
+desenhaJogadorLinha (l:ls) (x,y) (Jogador (a,b) c d) imagens | x == a && y == b && c == Este && d == False = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador_este imagens]
+                                                             | x == a && y == b && c == Oeste && d == False = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador_oeste imagens]
+                                                             | x == a && y == b && c == Este && d == True = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador_com_caixa_este imagens]
+                                                             | x == a && y == b && c == Oeste && d == True = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador_com_caixa_oeste imagens]
                                                              | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
                                                              | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (4.4) (4.4) $ jogador imagens]
                                                              | otherwise = desenhaJogadorLinha ls (x+1,y) (Jogador (a,b) c d) imagens
