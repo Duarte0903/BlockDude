@@ -26,9 +26,11 @@ data Cred = VMenu
 
 data Mapas = Mapa1 | Mapa2 | Mapa3 | Voltar
 
-data Pause = Voltar2 | Continuar 
+data Pause = Voltar2 | Reset 
 
 data Imagens = Imagens {
+  mapas_preto :: Picture,
+  mapas_laranja :: Picture,
   jogador_este :: Picture,
   jogador_oeste :: Picture,
   jogador_com_caixa_este :: Picture,
@@ -64,6 +66,8 @@ type World = (Menu,Jogo,Imagens)
 
 loadImages :: IO Imagens
 loadImages = do
+   mapas_pretoim <- loadBMP "imgs/mapas_preto.bmp"
+   mapas_laranjaim <- loadBMP "imgs/mapas_laranja.bmp"
    jogador_esteim <- loadBMP "pecas/jogador_este.bmp"
    jogador_oesteim <- loadBMP "pecas/jogador_oeste.bmp"
    jogador_com_caixa_esteim <- loadBMP "pecas/jogador_com_caixa_este.bmp"
@@ -92,7 +96,7 @@ loadImages = do
    nivel2_azulim <- loadBMP "imgs/nivel2_azul.bmp"
    nivel3_pretoim <- loadBMP "imgs/nivel3_preto.bmp"
    nivel3_azulim <- loadBMP "imgs/nivel3_azul.bmp"
-   return (Imagens jogador_esteim jogador_oesteim jogador_com_caixa_esteim jogador_com_caixa_oesteim vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
+   return (Imagens mapas_pretoim mapas_laranjaim jogador_esteim jogador_oesteim jogador_com_caixa_esteim jogador_com_caixa_oesteim vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
 
 
 window :: Display 
@@ -112,6 +116,8 @@ draw (ModoMap Mapa1, jogo, imgs) = Pictures [drawBackground $ background imgs, d
 draw (ModoMap Mapa2, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_azul imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Mapa3, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_azul imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Voltar, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_laranja imgs]
+draw (MenuPause Voltar2, jogo, imgs) = Pictures [drawBackground $ background imgs, drawMenuPause $ menu_laranja imgs, drawMapas $ mapas_preto imgs]
+draw (MenuPause Reset, jogo, imagens) = Pictures [drawBackground $ background imagens, drawMenuPause $ menu_preto imagens, drawMapas $ mapas_laranja imagens]
 draw (Modojogo (Jogo m (Jogador (x,y) d c)), jogo, imgs) = Pictures ([drawBackground $ background imgs] ++ (desenhaMapa m (0,0) imgs) ++ (desenhaJogadorMapa m (0,0) (Jogador (x,y) d c) imgs)) 
 -- draw (Modojogo (Jogo mapa2  (Jogador (10,6) d c)), jogo, imgs) = Pictures ([drawBackground $ background imgs] ++ (desenhaMapa mapa2 (0,0) imgs) ++ (desenhaJogadorMapa mapa2 (0,0) (Jogador (x,y) d c) imgs)) 
 
@@ -138,7 +144,13 @@ drawNomes :: Picture -> Picture
 drawNomes pic = Translate (-80) 15 $ Scale 2 2  pic
 
 drawMenu :: Picture -> Picture
-drawMenu pic = Translate 100 (-290) $ Scale 0.8 0.8 pic 
+drawMenu pic = Translate 100 (-290) $ Scale 0.8 0.8 pic
+
+drawMenuPause ::  Picture -> Picture
+drawMenuPause pic = Translate 100 (-80) $ Scale 1 1 pic
+
+drawMapas :: Picture -> Picture
+drawMapas pic = Translate 103 (-90) $ Scale 1.2 1.2 pic
 
 drawNivel1 :: Picture -> Picture 
 drawNivel1 pic = Translate 40 0 pic
@@ -216,6 +228,13 @@ event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo, jogo, imgs) = (Cont
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (Modojogo (Jogo mapa1 (Jogador (10,6) Oeste False)), jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa2, jogo, imgs) = (Modojogo (Jogo mapa2  (Jogador (0,8) Este False)), jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa3, jogo, imgs) = (Modojogo (Jogo mapa3  (Jogador (1,6) Este False)), jogo, imgs)
+event (EventKey (Char 'p') Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (MenuPause Voltar2, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (MenuPause Voltar2, jogo, imagens) = (Controlador Jogar, jogo, imagens)
+event (EventKey (SpecialKey KeyDown) Down _ _ ) (MenuPause Voltar2, jogo, imagens) = (MenuPause Reset, jogo, imagens)
+event (EventKey (SpecialKey KeyDown) Down _ _ ) (MenuPause Reset, jogo, imagens) = (MenuPause Voltar2, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _ ) (MenuPause Reset, jogo, imagens) = (MenuPause Voltar2, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _ ) (MenuPause Voltar2, jogo, imagens) = (MenuPause Reset, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (MenuPause Reset, jogo, imagens) = (ModoMap Mapa1, jogo, imagens)
 event (EventKey (SpecialKey KeyLeft) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) c d)) AndarEsquerda), jogo, imagens)
 event _ w = w
 
