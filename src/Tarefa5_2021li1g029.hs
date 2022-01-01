@@ -132,8 +132,7 @@ draw (MenuPause Voltar2, jogo, imgs) = Pictures [drawBackground $ background img
 draw (MenuPause Reset, jogo, imagens) = Pictures [drawBackground $ background imagens, drawMenuPause $ menu_preto imagens, drawMapas $ mapas_laranja imagens]
 draw (Modojogo (Jogo m (Jogador (x,y) d c)), jogo, imgs) | m == mapa1 = Pictures [drawBackground $ background imgs, Translate (-390) 90 $ Pictures [Pictures ((desenhaMapa m (0,0) imgs) ++ (desenhaJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]]
                                                          | m == mapa2 = Pictures [drawBackground $ background imgs, Translate (-100) 90 $ Pictures [Pictures ((desenhaMapa m (0,0) imgs) ++ (desenhaJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]]
-                                                         | m == mapa3 = Pictures [drawBackground $ background imgs, Translate (-160) 0 $ Pictures [Pictures ((desenhaMapa m (0,0) imgs) ++ (desenhaJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]]
- 
+                                                         | m == mapa3 = Pictures [drawBackground $ background imgs, Translate (-160) 0 $ Pictures [Pictures ((desenhaMapa m (0,0) imgs) ++ (desenhaJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]] 
 
 
 drawBackground :: Picture -> Picture 
@@ -180,10 +179,6 @@ drawNivel2 pic = Translate 40 (-80) pic
 
 drawNivel3 :: Picture -> Picture 
 drawNivel3 pic = Translate 40 (-160) pic 
-
-
-l :: Float  -- lado dos blocos e caixas
-l = 32
 
 
 desenhaMapa :: Mapa -> (Int,Int) -> Imagens -> [Picture]
