@@ -43,7 +43,11 @@ moveJogador (Jogo mapa (Jogador (x,y) dir b)) m | m == AndarEsquerda = (Jogo map
                                                 | m == InterageCaixa && dir == Este && b == True = (Jogo mapa (Jogador (x,y) Este False))   -- larga a caixa virado para este
                                                 | m == InterageCaixa && dir == Oeste && b == False = (Jogo mapa (Jogador (x,y) Oeste True)) -- pega na caixa virado para oeste 
                                                 | m == InterageCaixa && dir == Oeste && b == True = (Jogo mapa (Jogador (x,y) Oeste False)) -- larga a caixa virado para oeste 
-                                                            
+
+
+
+
+
 {- | Devolve o jogo final determinado em aux1 depois de correr
 todos os movimentos
 
