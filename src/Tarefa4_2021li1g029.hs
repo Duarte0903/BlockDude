@@ -33,10 +33,10 @@ moveJogador (Jogo mapa (Jogador (x,y) dir b)) m | m == AndarEsquerda = (Jogo map
 
 -}
 moveJogador :: Jogo -> Movimento -> Jogo         -- jogo = (Jogo mapa (Jogador coordenadas direcao bool))
-moveJogador (Jogo mapa (Jogador (x,y) dir b)) m | m == AndarEsquerda = (Jogo mapa (Jogador (x,y) Oeste b))                                  -- vira para oeste
+moveJogador (Jogo mapa (Jogador (x,y) dir b)) m | m == AndarEsquerda && dir == Este = (Jogo mapa (Jogador (x,y) Oeste b))                                  -- vira para oeste
                                                 | m == AndarEsquerda && dir == Oeste = (Jogo mapa (Jogador (x-1,y) Oeste b))                -- anda para oeste
-                                                | m == AndarDireita = (Jogo mapa (Jogador (x,y) Este b))                                    -- vira para este
-                                                | m == AndarEsquerda && dir == Oeste = (Jogo mapa (Jogador (x+1,y) Este b))                 -- anda para este
+                                                | m == AndarDireita && dir == Oeste = (Jogo mapa (Jogador (x,y) Este b))                                    -- vira para este
+                                                | m == AndarDireita && dir == Este = (Jogo mapa (Jogador (x+1,y) Este b))                 -- anda para este
                                                 | m == Trepar && dir == Oeste = (Jogo mapa (Jogador (x-1,y-1) Oeste b))                     -- trepa virado para oeste
                                                 | m == Trepar && dir == Este = (Jogo mapa (Jogador (x+1,y-1) Este b))                       -- trepa virado para este
                                                 | m == InterageCaixa && dir == Este && b == False = (Jogo mapa (Jogador (x,y) Este True))   -- pega na caixa virado para este 

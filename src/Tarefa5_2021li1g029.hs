@@ -18,7 +18,7 @@ import Graphics.Gloss.Interface.Pure.Game
 
 
 
-data Menu = Controlador Opcoes | Modojogo Jogo | VenceuJogo | Modocred Cred | ModoMap Mapas | MenuPause Pause | ControlsMenu Controls
+data Menu = Controlador Opcoes | Modojogo Jogo | VenceuJogo Vitoria | Modocred Cred | ModoMap Mapas | MenuPause Pause | ControlsMenu Controls
  
 data Opcoes = Jogar | Creditos | Sair | ComoJogar
 
@@ -30,7 +30,10 @@ data Pause = Voltar2 | Reset
 
 data Controls = Controls 
 
+data Vitoria = IrMenu | VerMapas
+
 data Imagens = Imagens {
+  venceu :: Picture,
   controls :: Picture,
   como_jogar_azul :: Picture,
   como_jogar_laranja :: Picture,
@@ -72,6 +75,7 @@ type World = (Menu,Jogo,Imagens)
 
 loadImages :: IO Imagens
 loadImages = do
+   venceuim <- loadBMP "imgs/venceu.bmp"
    controlsim <- loadBMP "imgs/controls.bmp"
    como_jogar_azulim <- loadBMP "imgs/como_jogar_azul.bmp"
    como_jogar_laranjaim <- loadBMP "imgs/como_jogar_laranja.bmp" -- !!! É preto !!!  
@@ -105,7 +109,7 @@ loadImages = do
    nivel2_azulim <- loadBMP "imgs/nivel2_azul.bmp"
    nivel3_pretoim <- loadBMP "imgs/nivel3_preto.bmp"
    nivel3_azulim <- loadBMP "imgs/nivel3_azul.bmp"
-   return (Imagens controlsim como_jogar_azulim como_jogar_laranjaim mapas_pretoim mapas_laranjaim jogador_esteim jogador_oesteim jogador_com_caixa_esteim jogador_com_caixa_oesteim vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
+   return (Imagens venceuim controlsim como_jogar_azulim como_jogar_laranjaim mapas_pretoim mapas_laranjaim jogador_esteim jogador_oesteim jogador_com_caixa_esteim jogador_com_caixa_oesteim vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
 
 
 window :: Display 
@@ -117,7 +121,8 @@ fr = 25
 
 
 draw :: World -> Picture 
-draw (VenceuJogo, jogo, imgs) = Translate (-200) 0 (color red (Text "VENCEU!"))
+draw (VenceuJogo VerMapas, jogo, imagens) = Pictures [drawBackground $ background imagens, drawVenceu $ venceu imagens, drawMenuPause $ menu_preto imagens, drawMapas $ mapas_laranja imagens]
+draw (VenceuJogo IrMenu, jogo, imagens) = Pictures [drawBackground $ background imagens, drawVenceu $ venceu imagens, drawMenuPause $ menu_laranja imagens, drawMapas $ mapas_preto imagens]
 draw (Controlador Jogar, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_azul imgs, drawSair $ sair_preto imgs, drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_laranja imgs]
 draw (Controlador Creditos, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_preto imgs, drawCreditos $ creditos_azul imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_laranja imgs]
 draw (Controlador Sair, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_zaul imgs,drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_laranja imgs]
@@ -134,9 +139,11 @@ draw (Modojogo (Jogo m (Jogador (x,y) d c)), jogo, imgs) | m == mapa1 = Pictures
                                                          | m == mapa2 = Pictures [drawBackground $ background imgs, Translate (-170) 90 $ Pictures [Pictures ((desenhaMapa m (0,0) imgs) ++ (desenhaJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]]
                                                          | m == mapa3 = Pictures [drawBackground $ background imgs, Translate (-160) 0 $ Pictures [Pictures ((desenhaMapa m (0,0) imgs) ++ (desenhaJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]] 
 
-
 drawBackground :: Picture -> Picture 
 drawBackground pic = pic
+
+drawVenceu :: Picture -> Picture 
+drawVenceu pic =Translate (-30) 90 pic
 
 drawComoJogar :: Picture -> Picture 
 drawComoJogar pic = Translate 10 (-450) pic
@@ -243,7 +250,6 @@ event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Mapa2, jogo, imgs) = (Mod
 event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (ModoMap Voltar, jogo, imgs)
 event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (ModoMap Mapa3, jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (Controlador Jogar, jogo, imgs)
-event (EventKey (SpecialKey KeyEnter) Down _ _) (VenceuJogo, jogo, imgs) = (Controlador Jogar, jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (Modojogo (Jogo mapa1 (Jogador (10,6) Oeste False)), jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa2, jogo, imgs) = (Modojogo (Jogo mapa2  (Jogador (1,8) Este False)), jogo, imgs)
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa3, jogo, imgs) = (Modojogo (Jogo mapa3  (Jogador (1,6) Este False)), jogo, imgs)
@@ -258,8 +264,15 @@ event (EventKey (SpecialKey KeyLeft) Down _ _) (Modojogo (Jogo mapa (Jogador (a,
 event (EventKey (SpecialKey KeyRight) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) c d)) AndarDireita), jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) c d)) Trepar), jogo, imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) c d)) InterageCaixa), jogo, imagens)
-event _ w = w
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (Modojogo (Jogo mapa3 (Jogador (14,4) c d)),jogo, imagens) = (VenceuJogo IrMenu, jogo, imagens)
+event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo IrMenu, jogo, imagens) = (VenceuJogo VerMapas, jogo, imagens)
+event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo VerMapas, jogo, imagens) = (VenceuJogo IrMenu, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo IrMenu, jogo, imagens) = (VenceuJogo VerMapas, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo VerMapas, jogo, imagens) = (VenceuJogo IrMenu, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (VenceuJogo IrMenu, jogo, imagens) = (Controlador Jogar, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (VenceuJogo VerMapas, jogo, imagens) = (ModoMap Mapa1, jogo, imagens)
 
+event _ w = w
 
 
 time :: Float -> World -> World
