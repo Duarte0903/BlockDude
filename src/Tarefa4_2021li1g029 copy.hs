@@ -47,72 +47,37 @@ moveJogador (Jogo mapa (Jogador (x,y) dir b)) m | m == AndarEsquerda && dir == E
 
 
 
-
-{- | Devolve o jogo final determinado em aux1 depois de correr
-todos os movimentos
-
-@
 correrMovimentos :: Jogo -> [Movimento] -> Jogo
-correrMovimentos (Jogo mapa (Jogador (x,y) dir b)) [] = Jogo mapa (Jogador (x,y) Este False)
-correrMovimentos (Jogo mapa (Jogador (x,y) dir b)) l = aux1 (Jogo mapa (Jogador (x,y) dir b)) l
-@
+correrMovimentos (Jogo l (Jogador (a,b) d f)) [] = Jogo l (Jogador (a,b) d f)
+correrMovimentos (Jogo l (Jogador (a,b) d f)) (m:ms) = correrMovimentos (moveJogador (Jogo l (Jogador (a,b) d f)) m) ms 
 
--}
-correrMovimentos :: Jogo -> [Movimento] -> Jogo
-correrMovimentos (Jogo mapa (Jogador (x,y) dir b)) [] = Jogo mapa (Jogador (x,y) dir b)
-correrMovimentos (Jogo mapa (Jogador (x,y) dir b)) l = aux1 (Jogo mapa (Jogador (x,y) dir b)) l
 
-{- | Recebe um jogo e uma lista de movimentos. 
-Devolve um jogo onde foram corridos todos os movimentos
 
-@
-aux1 :: Jogo -> [Movimento] -> Jogo
-aux1 (Jogo mapa (Jogador (x,y) dir b)) l = aux3 (aux2 (Jogo mapa (Jogador (x,y) dir b)) l)
-@
 
--}
-aux1 :: Jogo -> [Movimento] -> Jogo
-aux1 (Jogo mapa (Jogador (x,y) dir b)) l = aux3 (aux2 (Jogo mapa (Jogador (x,y) dir b)) l)
 
-{- | Recebe um jogo e uma lista de movimentos. Devolve uma lista de jogos, onde cada um corresponde
-a correr um movimento no jogo original
+-- | Testa se existe um obstáculo do lado direito
+checkDireita :: Coordenadas -> [Coordenadas] -> Bool
+checkDireita (x,y) [] = False
+checkDireita (x,y) ((a,b):t) | y == b && x == a-1 = True
+                             | otherwise = checkDireita (x,y) t
 
-@
-aux2 :: Jogo -> [Movimento] -> [Jogo]
-aux2 (Jogo mapa (Jogador (x,y) dir b)) [] = [Jogo mapa (Jogador (x,y) dir b)]
-aux2 (Jogo mapa (Jogador (x,y) dir b)) (h:t) = moveJogador (Jogo mapa (Jogador (x,y) dir b)) h : aux2 (Jogo mapa (Jogador (x,y) dir b)) t
-@
 
-== Exemplos de utilização
+-- | Testa se existe um obstáculo do lado esquerdo
+checkEsquerda :: Coordenadas -> [Coordenadas] -> Bool
+checkEsquerda (x,y) [] = False
+checkEsquerda (x,y) ((a,b):t) | y == b && x == a+1 = True
+                              | otherwise = checkEsquerda (x,y) t
 
->>> aux2 (Jogo mapa (Jogador (x,y) dir b)) []  
-[Jogo mapa (Jogador (x,y) dir b)]
 
->>> aux2 (Jogo mapa (Jogador (x,y) dir b)) (h:t)  
-moveJogador (Jogo mapa (Jogador (x,y) dir b)) h : aux2 (Jogo mapa (Jogador (x,y) dir b)) t
+coordenadasCaixa :: Coordenadas -> [Peca] -> [Coordenadas]
+coordenadasCaixa (x,y) [] = []
+coordenadasCaixa (x,y) (z:zs) | z == Caixa = (x,y) : coordenadasCaixa (x+1,y) zs
+                                  | otherwise = coordenadasCaixa (x+1,y) zs
 
--}
-aux2 :: Jogo -> [Movimento] -> [Jogo]
-aux2 (Jogo mapa (Jogador (x,y) dir b)) [] = [Jogo mapa (Jogador (x,y) dir b)]
-aux2 (Jogo mapa (Jogador (x,y) dir b)) (h:t) = moveJogador (Jogo mapa (Jogador (x,y) dir b)) h : aux2 (Jogo mapa (Jogador (x,y) dir b)) t
 
-{- | Transforma uma lista de jogos num jogo
+coordenadasCaixaMapa :: Coordenadas -> Mapa -> [Coordenadas]
+coordenadasCaixaMapa (x,y) [] = []
+coordenadasCaixaMapa (x,y) (z:zs) = coordenadasCaixa (x,y) z ++ coordenadasCaixaMapa (0,y+1) zs
 
-@
-aux3 :: [Jogo] -> Jogo 
-aux3 [Jogo mapa (Jogador (x,y) dir b)] = Jogo mapa (Jogador (x,y) dir b)
-aux3 (h:t) = aux3 t
-@
 
-== Exemplos de utilização
 
->>> aux3 [Jogo mapa (Jogador (x,y) dir b)]
-Jogo mapa (Jogador (x,y) dir b)
-
->>> aux3 (h:t) 
-aux3 t
-
--}
-aux3 :: [Jogo] -> Jogo 
-aux3 [Jogo mapa (Jogador (x,y) dir b)] = Jogo mapa (Jogador (x,y) dir b)
-aux3 (h:t) = aux3 t
