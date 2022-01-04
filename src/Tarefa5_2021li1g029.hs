@@ -73,6 +73,7 @@ data Imagens = Imagens {
 type World = (Menu,Jogo,Imagens)
 
 
+-- | Carrega todas as imagens usadas no jogo 
 loadImages :: IO Imagens
 loadImages = do
    venceuim <- loadBMP "imgs/venceu.bmp"
@@ -112,120 +113,145 @@ loadImages = do
    return (Imagens venceuim controlsim como_jogar_azulim como_jogar_laranjaim mapas_pretoim mapas_laranjaim jogador_esteim jogador_oesteim jogador_com_caixa_esteim jogador_com_caixa_oesteim vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
 
 
+-- | A janela do jogo vai ocupar todo o ecrã
 window :: Display 
 window = FullScreen           
 
-
+-- | Frame rate (constante)
 fr :: Int              
 fr = 25
 
 
+-- | Transforma um world numa Picture / determina o que aparece no ecrã de acordo com o estado
 draw :: World -> Picture 
-draw (VenceuJogo VerMapas, jogo, imagens) = Pictures [drawBackground $ background imagens, drawVenceu $ venceu imagens, drawMenuPause $ menu_preto imagens, drawMapas $ mapas_laranja imagens]
-draw (VenceuJogo IrMenu, jogo, imagens) = Pictures [drawBackground $ background imagens, drawVenceu $ venceu imagens, drawMenuPause $ menu_laranja imagens, drawMapas $ mapas_preto imagens]
-draw (Controlador Jogar, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_azul imgs, drawSair $ sair_preto imgs, drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_laranja imgs]
-draw (Controlador Creditos, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_preto imgs, drawCreditos $ creditos_azul imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_laranja imgs]
-draw (Controlador Sair, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_zaul imgs,drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_laranja imgs]
-draw (Controlador ComoJogar, jogo, imgs) = Pictures [drawBackground $ background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_preto imgs,drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_azul imgs]
-draw (Modocred VMenu, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNomes $ nomes imgs, drawMenu $ menu_laranja imgs]
-draw (ControlsMenu Controls, jogo, imgs) = Pictures [drawBackground $ background imgs, drawControls $ controls imgs, drawMenu $ menu_laranja imgs]
-draw (ModoMap Mapa1, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_azul imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
-draw (ModoMap Mapa2, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_azul imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
-draw (ModoMap Mapa3, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_azul imgs, drawMenu $ menu_preto imgs]
-draw (ModoMap Voltar, jogo, imgs) = Pictures [drawBackground $ background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_laranja imgs]
-draw (MenuPause Voltar2, jogo, imgs) = Pictures [drawBackground $ background imgs, drawMenuPause $ menu_laranja imgs, drawMapas $ mapas_preto imgs]
-draw (MenuPause Reset, jogo, imagens) = Pictures [drawBackground $ background imagens, drawMenuPause $ menu_preto imagens, drawMapas $ mapas_laranja imagens]
-draw (Modojogo (Jogo m (Jogador (x,y) d c)), jogo, imgs) | m == mapa1 = Pictures [drawBackground $ background imgs, Translate (-390) 90 $ Pictures [Pictures ((desenhaMapa m (0,0) imgs) ++ (desenhaJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]]
-                                                         | m == mapa2 = Pictures [drawBackground $ background imgs, Translate (-170) 90 $ Pictures [Pictures ((desenhaMapa m (0,0) imgs) ++ (desenhaJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]]
-                                                         | m == mapa3 = Pictures [drawBackground $ background imgs, Translate (-160) 0 $ Pictures [Pictures ((desenhaMapa m (0,0) imgs) ++ (desenhaJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]] 
+draw (VenceuJogo VerMapas, jogo, imagens) = Pictures [background imagens, drawVenceu $ venceu imagens, drawMenuPause $ menu_preto imagens, drawMapas $ mapas_laranja imagens]
+draw (VenceuJogo IrMenu, jogo, imagens) = Pictures [background imagens, drawVenceu $ venceu imagens, drawMenuPause $ menu_laranja imagens, drawMapas $ mapas_preto imagens]
+draw (Controlador Jogar, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_azul imgs, drawSair $ sair_preto imgs, drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_laranja imgs]
+draw (Controlador Creditos, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_preto imgs, drawCreditos $ creditos_azul imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_laranja imgs]
+draw (Controlador Sair, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_zaul imgs,drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_laranja imgs]
+draw (Controlador ComoJogar, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_preto imgs,drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_azul imgs]
+draw (Modocred VMenu, jogo, imgs) = Pictures [background imgs, drawNomes $ nomes imgs, drawMenu $ menu_laranja imgs]
+draw (ControlsMenu Controls, jogo, imgs) = Pictures [background imgs, drawControls $ controls imgs, drawMenu $ menu_laranja imgs]
+draw (ModoMap Mapa1, jogo, imgs) = Pictures [background imgs, drawNivel1 $ nivel1_azul imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
+draw (ModoMap Mapa2, jogo, imgs) = Pictures [background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_azul imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
+draw (ModoMap Mapa3, jogo, imgs) = Pictures [background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_azul imgs, drawMenu $ menu_preto imgs]
+draw (ModoMap Voltar, jogo, imgs) = Pictures [background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_laranja imgs]
+draw (MenuPause Voltar2, jogo, imgs) = Pictures [background imgs, drawMenuPause $ menu_laranja imgs, drawMapas $ mapas_preto imgs]
+draw (MenuPause Reset, jogo, imagens) = Pictures [background imagens, drawMenuPause $ menu_preto imagens, drawMapas $ mapas_laranja imagens]
+draw (Modojogo (Jogo m (Jogador (x,y) d c)), jogo, imgs) | m == mapa1 = Pictures [background imgs, Translate (-390) 90 $ Pictures [Pictures ((drawMapa m (0,0) imgs) ++ (drawJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]]
+                                                         | m == mapa2 = Pictures [background imgs, Translate (-170) 90 $ Pictures [Pictures ((drawMapa m (0,0) imgs) ++ (drawJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]]
+                                                         | m == mapa3 = Pictures [background imgs, Translate (-160) 0 $ Pictures [Pictures ((drawMapa m (0,0) imgs) ++ (drawJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]] 
 
-drawBackground :: Picture -> Picture 
-drawBackground pic = pic
 
+-- As funções que se seguem têm como objetivo aplicar Translate ou Scale a uma imagem dos ficheiros do jogo
+
+-- | desenha "venceu" no menu de vitória
 drawVenceu :: Picture -> Picture 
 drawVenceu pic =Translate (-30) 90 pic
 
+-- | desenha "como jogar" no menu principal
 drawComoJogar :: Picture -> Picture 
 drawComoJogar pic = Translate 10 (-450) pic
 
+-- | desenha as informações sobre o funcionamento do jogo no menu "como jogar"
 drawControls :: Picture -> Picture 
 drawControls pic = Translate 0 (-5) $ Scale 1.2 1.2 pic
 
+-- | desenha "block" (titulo) no menu principal
 drawBlock :: Picture -> Picture
 drawBlock pic = Translate (-140) 140 $ Scale 5 5  pic
 
+-- | desenha "dude" (titulo) no menu principal
 drawDude :: Picture -> Picture
 drawDude pic = Translate 240 140 $ Scale 5 5  pic
 
+-- | desenha "creditos" (titulo) no menu principal
 drawCreditos :: Picture -> Picture
 drawCreditos pic = Translate 60 (-180) $ Scale 2 2 pic
 
+-- | desenha a opção "jogar" no menu principal
 drawJogar :: Picture -> Picture
 drawJogar pic = Translate 30 0 $ Scale 2 2 pic 
 
+-- | desenha a opção "sair" no menu principal
 drawSair :: Picture -> Picture
 drawSair pic = Translate 25 (-80) $ Scale 2 2 pic 
 
+-- | desenha os nossos nomes no menu dos creditos
 drawNomes :: Picture -> Picture 
 drawNomes pic = Translate (-80) 15 $ Scale 2 2  pic
 
+-- | desenha a opção "menu" que se situa na parte inferior de vários menus 
 drawMenu :: Picture -> Picture
 drawMenu pic = Translate 100 (-290) $ Scale 0.8 0.8 pic
 
+-- | desenha a opção "menu" que se situa nos menus de pausa e vitoria
 drawMenuPause ::  Picture -> Picture
 drawMenuPause pic = Translate 100 (-80) $ Scale 1 1 pic
 
+-- | desenha a opção "mapas" que se situa nos menus de pausa e vitoria
 drawMapas :: Picture -> Picture
 drawMapas pic = Translate 103 (-90) $ Scale 1.2 1.2 pic
 
+-- | desenha "nivel 1" no menu dos mapas
 drawNivel1 :: Picture -> Picture 
 drawNivel1 pic = Translate 40 0 pic
 
+-- | desenha "nivel 2" no menu dos mapas
 drawNivel2 :: Picture -> Picture 
 drawNivel2 pic = Translate 40 (-80) pic
 
+-- | desenha "nivel 3" no menu dos mapas
 drawNivel3 :: Picture -> Picture 
 drawNivel3 pic = Translate 40 (-160) pic 
 
+-- | Desenha um dos 3 mapas com o auxilio da função drawLinha
+drawMapa :: Mapa -> (Int,Int) -> Imagens -> [Picture]
+drawMapa [] _ _ = []
+drawMapa (l:ls) (x,y) imagens = drawLinha l (x,y) imagens ++ drawMapa ls (0,y+1) imagens
 
-desenhaMapa :: Mapa -> (Int,Int) -> Imagens -> [Picture]
-desenhaMapa [] _ _ = []
-desenhaMapa (l:ls) (x,y) imagens = desenhaLinha l (x,y) imagens ++ desenhaMapa ls (0,y+1) imagens
-
-desenhaLinha :: [Peca] -> (Int,Int) -> Imagens -> [Picture]
-desenhaLinha [] _ _ = []
-desenhaLinha (p:ps) (x,y) imagens | p == Vazio = [Translate (i-270) (j+268) $ Scale (6) (6) $ vazio imagens] ++ desenhaLinha ps (x+1,y) imagens
-                                  | p == Bloco = [Translate (i-270) (j+268) $ Scale (6) (6) $ bloco imagens] ++ desenhaLinha ps (x+1,y) imagens
-                                  | p == Porta = [Translate (i-270) (j+268) $ Scale (6) (6) $ porta imagens] ++ desenhaLinha ps (x+1,y) imagens
-                                  | p == Caixa = [Translate (i-270) (j+268) $ Scale (6) (6) $ caixa imagens] ++ desenhaLinha ps (x+1,y) imagens
+-- | Recebe uma linha do mapa, um par de coordenadas e as imagens do jogo
+-- Dependendo da peca, será atribuida uma imagem e uma translação e um Scale 
+-- O processo e repetido para as outras pecas, devolvendo uma lista de pictures
+drawLinha :: [Peca] -> (Int,Int) -> Imagens -> [Picture]
+drawLinha [] _ _ = []
+drawLinha (p:ps) (x,y) imagens | p == Vazio = [Translate (i-270) (j+268) $ Scale (6) (6) $ vazio imagens] ++ drawLinha ps (x+1,y) imagens
+                               | p == Bloco = [Translate (i-270) (j+268) $ Scale (6) (6) $ bloco imagens] ++ drawLinha ps (x+1,y) imagens
+                               | p == Porta = [Translate (i-270) (j+268) $ Scale (6) (6) $ porta imagens] ++ drawLinha ps (x+1,y) imagens
+                               | p == Caixa = [Translate (i-270) (j+268) $ Scale (6) (6) $ caixa imagens] ++ drawLinha ps (x+1,y) imagens
 
                                    where i = fromIntegral (x*60)
                                          j = fromIntegral (-y*60)
 
-
-desenhaJogadorLinha :: [Peca] -> (Int,Int) -> Jogador -> Imagens -> [Picture]
-desenhaJogadorLinha [] _ _ _= []
-desenhaJogadorLinha (l:ls) (x,y) (Jogador (a,b) c d) imagens | x == a && y == b && c == Este && d == False = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_este imagens]
-                                                             | x == a && y == b && c == Oeste && d == False = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_oeste imagens]
-                                                             | x == a && y == b && c == Este && d == True = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_com_caixa_este imagens]
-                                                             | x == a && y == b && c == Oeste && d == True = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_com_caixa_oeste imagens]
-                                                             | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador imagens]
-                                                             | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador imagens]
-                                                             | otherwise = desenhaJogadorLinha ls (x+1,y) (Jogador (a,b) c d) imagens
-     where
-         i = fromIntegral (x*60)
-         j = fromIntegral (-y*60)
-
-
-desenhaJogadorMapa :: Mapa -> (Int,Int) -> Jogador -> Imagens -> [Picture]
-desenhaJogadorMapa [] _ _ _ = []
-desenhaJogadorMapa (l:ls) (x,y) (Jogador (a,b) c d) imagens = desenhaJogadorLinha l (x,y) (Jogador (a,b) c d) imagens ++ desenhaJogadorMapa ls (x,y+1) (Jogador (a,b) c d) imagens
+-- | Recebe uma lista de pecas/linha do mapa, um par de coordenadas e as imagens do jogo
+-- Se as coordenadas do jogador forem iguais ao par de coordenadas introduzido, será desenhado o jogador de acordo com o seu estado
+drawJogadorLinha :: [Peca] -> (Int,Int) -> Jogador -> Imagens -> [Picture]
+drawJogadorLinha [] _ _ _= []
+drawJogadorLinha (l:ls) (x,y) (Jogador (a,b) c d) imagens | x == a && y == b && c == Este && d == False = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_este imagens]
+                                                          | x == a && y == b && c == Oeste && d == False = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_oeste imagens]
+                                                          | x == a && y == b && c == Este && d == True = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_com_caixa_este imagens]
+                                                          | x == a && y == b && c == Oeste && d == True = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador_com_caixa_oeste imagens]
+                                                          | x == a && y == b && c == Este = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador imagens]
+                                                          | x == a && y == b && c == Oeste = [Translate (i-270) (j+268) $ Scale (1.1) (1.1) $ jogador imagens]
+                                                          | otherwise = drawJogadorLinha ls (x+1,y) (Jogador (a,b) c d) imagens
+                                   
+                                    where i = fromIntegral (x*60)
+                                          j = fromIntegral (-y*60)
 
 
+-- | Recorre à função drawJogadorLinha para colocar o jogador no mapa
+-- Irá analizar as linhas e colocar o jogador no lugar correto depois de um movimento 
+drawJogadorMapa :: Mapa -> (Int,Int) -> Jogador -> Imagens -> [Picture]
+drawJogadorMapa [] _ _ _ = []
+drawJogadorMapa (l:ls) (x,y) (Jogador (a,b) c d) imagens = drawJogadorLinha l (x,y) (Jogador (a,b) c d) imagens ++ drawJogadorMapa ls (x,y+1) (Jogador (a,b) c d) imagens
+
+
+-- | Equivalente à função moveJogador da tarefa 4. como o nome indica faz o jogador trocar de posição
 engine :: Jogo -> Movimento -> Jogo
 engine = moveJogador
 
 
+-- | Recebe um evento do teclado e altera o estado do jogo
 event :: Event -> World -> World
 event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Jogar, jogo, imgs) = (ModoMap Mapa1, jogo, imgs)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Jogar, jogo, imgs) = (Controlador ComoJogar, jogo, imgs)
@@ -271,7 +297,6 @@ event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo IrMenu, jogo, imagens) 
 event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo VerMapas, jogo, imagens) = (VenceuJogo IrMenu, jogo, imagens)
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (VenceuJogo IrMenu, jogo, imagens) = (Controlador Jogar, jogo, imagens)
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (VenceuJogo VerMapas, jogo, imagens) = (ModoMap Mapa1, jogo, imagens)
-
 event _ w = w
 
 
