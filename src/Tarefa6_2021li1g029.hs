@@ -73,7 +73,7 @@ portaEsquerdaDiag (Jogador (x,y) _ _ ) (a,b) =
      else False
 
 
-
+-- | A função 'direcao' retorna uma String a partir da qual sabemos a direção a seguir, se o Jogador se apresentar á direita da porta então terá de se dirigir para a esquerda
 direcao :: Jogador -> Coordenadas -> String
 direcao (Jogador (x,y) _ _ ) (a,b) | x < a = "SegueDireita"
                                   | x > a = "SegueEsquerda"
@@ -85,6 +85,29 @@ damovimento :: Jogador -> Coordenadas -> Movimento
 damovimento j@( Jogador (x,y)f g) (a,b) |direcao j (a,b) == "SegueDireita" =AndarDireita
                                         |direcao j (a,b) == "SegueEsquerda" = AndarEsquerda
                                         |otherwise = Trepar
+
+aux1 :: Coordenadas -> Peca -> [Peca ] -> [Coordenadas]      
+aux1 (x,y) a [] = []
+aux1 (x,y) a (b:bs) | a == b = (x,y) :aux1 (x+1,y) a bs    
+                    |otherwise = aux1 (x+1,y) a bs                        
+
+contaCoordenadas :: Peca  -> Mapa -> [Coordenadas ]
+contaCoordenadas p m = aux2 (0,0) p m
+                        where aux2 :: Coordenadas -> Peca -> Mapa -> [Coordenadas]
+                              aux2 (x,y) a [] = [] 
+                              aux2 (x,y) a ((c:b):h)= (aux1 (x,y) a (c:b)) ++ aux2 (x,y+1) a h
+-- | 
+coordenadaPorta :: Mapa -> Coordenadas
+coordenadaPorta l = aux (contaCoordenadas (Porta) l)
+                 where aux :: [Coordenadas ] ->Coordenadas  
+                       aux [(x,y)] =(x,y)
+                       aux (x:xs)= aux [x]
+
+
+
+
+bot :: Jogo -> [Movimento]
+bot j@(Jogo l (Jogador (x,y) f g)) |direcao (Jogador (x,y)f g) (coordenadaPorta l) == "ChegouPorta" =[]
 
 
 
