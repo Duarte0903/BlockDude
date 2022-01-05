@@ -26,7 +26,7 @@ data Cred = VMenu
 
 data Mapas = Mapa1 | Mapa2 | Mapa3 | Voltar
 
-data Pause = Voltar2 | Reset 
+data Pause = Voltar2 | Maps 
 
 data Controls = Controls 
 
@@ -137,7 +137,7 @@ draw (ModoMap Mapa2, jogo, imgs) = Pictures [background imgs, drawNivel1 $ nivel
 draw (ModoMap Mapa3, jogo, imgs) = Pictures [background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_azul imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Voltar, jogo, imgs) = Pictures [background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_laranja imgs]
 draw (MenuPause Voltar2, jogo, imgs) = Pictures [background imgs, drawMenuPause $ menu_laranja imgs, drawMapas $ mapas_preto imgs]
-draw (MenuPause Reset, jogo, imagens) = Pictures [background imagens, drawMenuPause $ menu_preto imagens, drawMapas $ mapas_laranja imagens]
+draw (MenuPause Maps, jogo, imagens) = Pictures [background imagens, drawMenuPause $ menu_preto imagens, drawMapas $ mapas_laranja imagens]
 draw (Modojogo (Jogo m (Jogador (x,y) d c)), jogo, imgs) | m == mapa1 = Pictures [background imgs, Translate (-390) 90 $ Pictures [Pictures ((drawMapa m (0,0) imgs) ++ (drawJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]]
                                                          | m == mapa2 = Pictures [background imgs, Translate (-170) 90 $ Pictures [Pictures ((drawMapa m (0,0) imgs) ++ (drawJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]]
                                                          | m == mapa3 = Pictures [background imgs, Translate (-160) 0 $ Pictures [Pictures ((drawMapa m (0,0) imgs) ++ (drawJogadorMapa m (0,0) (Jogador (x,y) d c) imgs))]] 
@@ -253,39 +253,39 @@ engine = moveJogador
 
 -- | Recebe um evento do teclado e altera o estado do jogo
 event :: Event -> World -> World
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Jogar, jogo, imgs) = (ModoMap Mapa1, jogo, imgs)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Jogar, jogo, imgs) = (ModoMap Mapa1, jogo, imgs)               -- selecao de mapas 
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Jogar, jogo, imgs) = (Controlador ComoJogar, jogo, imgs)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Jogar, jogo, imgs) = (Controlador Sair, jogo, imgs)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Sair, jogo, imgs) = (Controlador Jogar, jogo, imgs)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Sair, jogo, imgs) = (Controlador Creditos, jogo, imgs)
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Sair, jogo, imgs) = undefined
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Sair, jogo, imgs) = undefined                                  -- sair do jogo
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Creditos, jogo, imgs) = (Controlador ComoJogar, jogo, imgs)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Creditos, jogo, imgs) = (Controlador Sair, jogo, imgs)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador ComoJogar, jogo, imgs) = (Controlador Creditos, jogo, imgs)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador ComoJogar, jogo, imgs) = (Controlador Jogar, jogo, imgs)
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador ComoJogar, jogo, imgs) = (ControlsMenu Controls, jogo, imgs)
-event (EventKey (SpecialKey KeyEnter) Down _ _) (ControlsMenu Controls, jogo, imgs) = (Controlador Jogar, jogo, imgs)
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Creditos, jogo, imgs) = (Modocred VMenu, jogo, imgs)
-event (EventKey (SpecialKey KeyEnter) Down _ _ ) (Modocred VMenu, jogo, imgs) = (Controlador Jogar, jogo, imgs)
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador ComoJogar, jogo, imgs) = (ControlsMenu Controls, jogo, imgs)   -- como jogar 
+event (EventKey (SpecialKey KeyEnter) Down _ _) (ControlsMenu Controls, jogo, imgs) = (Controlador Jogar, jogo, imgs)       -- como jogar -> menu principal
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Creditos, jogo, imgs) = (Modocred VMenu, jogo, imgs)           -- ver creditos
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (Modocred VMenu, jogo, imgs) = (Controlador Jogar, jogo, imgs)             -- creditos -> menu principal 
 event (EventKey (SpecialKey KeyDown) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (ModoMap Mapa2, jogo, imgs)
 event (EventKey (SpecialKey KeyDown) Down _ _ ) (ModoMap Mapa2, jogo, imgs) = (ModoMap Mapa3, jogo, imgs)
 event (EventKey (SpecialKey KeyDown) Down _ _ ) (ModoMap Mapa3, jogo, imgs) = (ModoMap Voltar, jogo, imgs)
-event (EventKey (SpecialKey KeyDown) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (ModoMap Mapa1, jogo, imgs)
+event (EventKey (SpecialKey KeyDown) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (ModoMap Mapa1, jogo, imgs)     
 event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Mapa3, jogo, imgs) = (ModoMap Mapa2, jogo, imgs)
 event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Mapa2, jogo, imgs) = (ModoMap Mapa1, jogo, imgs)
 event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (ModoMap Voltar, jogo, imgs)
 event (EventKey (SpecialKey KeyUp) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (ModoMap Mapa3, jogo, imgs)
-event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (Controlador Jogar, jogo, imgs)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Voltar, jogo, imgs) = (Controlador Jogar, jogo, imgs)                                   -- mapas -> menu principal
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (Modojogo (Jogo mapa1 (Jogador (10,6) Oeste False)), jogo, imgs)   -- Posição inicial mapa1
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa2, jogo, imgs) = (Modojogo (Jogo mapa2  (Jogador (1,6) Este False)), jogo, imgs)    -- Posição inicial mapa2
 event (EventKey (SpecialKey KeyEnter) Down _ _ ) (ModoMap Mapa3, jogo, imgs) = (Modojogo (Jogo mapa3  (Jogador (1,6) Este False)), jogo, imgs)    -- Posição inical mapa3
-event (EventKey (Char 'p') Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (MenuPause Voltar2, jogo, imagens)
-event (EventKey (SpecialKey KeyEnter) Down _ _ ) (MenuPause Voltar2, jogo, imagens) = (Controlador Jogar, jogo, imagens)
-event (EventKey (SpecialKey KeyDown) Down _ _ ) (MenuPause Voltar2, jogo, imagens) = (MenuPause Reset, jogo, imagens)
-event (EventKey (SpecialKey KeyDown) Down _ _ ) (MenuPause Reset, jogo, imagens) = (MenuPause Voltar2, jogo, imagens)
-event (EventKey (SpecialKey KeyUp) Down _ _ ) (MenuPause Reset, jogo, imagens) = (MenuPause Voltar2, jogo, imagens)
-event (EventKey (SpecialKey KeyUp) Down _ _ ) (MenuPause Voltar2, jogo, imagens) = (MenuPause Reset, jogo, imagens)
-event (EventKey (SpecialKey KeyEnter) Down _ _ ) (MenuPause Reset, jogo, imagens) = (ModoMap Mapa1, jogo, imagens)
+event (EventKey (Char 'p') Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (MenuPause Voltar2, jogo, imagens)                -- menu de pausa
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (MenuPause Voltar2, jogo, imagens) = (Controlador Jogar, jogo, imagens)                          -- menu pausa -> menu principal
+event (EventKey (SpecialKey KeyDown) Down _ _ ) (MenuPause Voltar2, jogo, imagens) = (MenuPause Maps, jogo, imagens)
+event (EventKey (SpecialKey KeyDown) Down _ _ ) (MenuPause Maps, jogo, imagens) = (MenuPause Voltar2, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _ ) (MenuPause Maps, jogo, imagens) = (MenuPause Voltar2, jogo, imagens)
+event (EventKey (SpecialKey KeyUp) Down _ _ ) (MenuPause Voltar2, jogo, imagens) = (MenuPause Maps, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (MenuPause Maps, jogo, imagens) = (ModoMap Mapa1, jogo, imagens)                                -- menu pausa -> selecao de mapas
 event (EventKey (SpecialKey KeyLeft) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) c d)) AndarEsquerda), jogo, imagens)
 event (EventKey (SpecialKey KeyRight) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) c d)) AndarDireita), jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) c d)) Trepar), jogo, imagens)
@@ -297,8 +297,8 @@ event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo IrMenu, jogo, imagens
 event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo VerMapas, jogo, imagens) = (VenceuJogo IrMenu, jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo IrMenu, jogo, imagens) = (VenceuJogo VerMapas, jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo VerMapas, jogo, imagens) = (VenceuJogo IrMenu, jogo, imagens)
-event (EventKey (SpecialKey KeyEnter) Down _ _ ) (VenceuJogo IrMenu, jogo, imagens) = (Controlador Jogar, jogo, imagens)
-event (EventKey (SpecialKey KeyEnter) Down _ _ ) (VenceuJogo VerMapas, jogo, imagens) = (ModoMap Mapa1, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (VenceuJogo IrMenu, jogo, imagens) = (Controlador Jogar, jogo, imagens)   -- menu vitoria -> menu principal
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (VenceuJogo VerMapas, jogo, imagens) = (ModoMap Mapa1, jogo, imagens)     --  menu vitoria -> selecao mapas
 event _ w = w
 
 
