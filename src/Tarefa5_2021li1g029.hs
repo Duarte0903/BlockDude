@@ -290,7 +290,9 @@ event (EventKey (SpecialKey KeyLeft) Down _ _) (Modojogo (Jogo mapa (Jogador (a,
 event (EventKey (SpecialKey KeyRight) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) c d)) AndarDireita), jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) c d)) Trepar), jogo, imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Modojogo (Jogo mapa (Jogador (a,b) c d)),jogo, imagens) = (Modojogo (engine (Jogo mapa (Jogador (a,b) c d)) InterageCaixa), jogo, imagens)
-event (EventKey (SpecialKey KeyEnter) Down _ _ ) (Modojogo (Jogo mapa3 (Jogador (14,4) c d)),jogo, imagens) = (VenceuJogo IrMenu, jogo, imagens)
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (Modojogo (Jogo mapa1 (Jogador (1,8) c d)),jogo, imagens) = (VenceuJogo IrMenu, jogo, imagens)  -- Vitoria mapa 1
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (Modojogo (Jogo mapa2 (Jogador (4,14) c d)),jogo, imagens) = (VenceuJogo IrMenu, jogo, imagens) -- Vitoria mapa 2
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (Modojogo (Jogo mapa3 (Jogador (14,4) c d)),jogo, imagens) = (VenceuJogo IrMenu, jogo, imagens) -- Vitoria mapa 3
 event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo IrMenu, jogo, imagens) = (VenceuJogo VerMapas, jogo, imagens)
 event (EventKey (SpecialKey KeyDown) Down _ _) (VenceuJogo VerMapas, jogo, imagens) = (VenceuJogo IrMenu, jogo, imagens)
 event (EventKey (SpecialKey KeyUp) Down _ _) (VenceuJogo IrMenu, jogo, imagens) = (VenceuJogo VerMapas, jogo, imagens)
