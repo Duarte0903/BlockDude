@@ -9,10 +9,17 @@ Módulo para a realização da Tarefa 6 do projeto de LI1 em 2021/22.
 module Tarefa6_2021li1g029 where
 
 import LI12122
+import Tarefa4_2021li1g029
+import Tarefa3_2021li1g029
+import Tarefa2_2021li1g029
+import Tarefa1_2021li1g029
 
 resolveJogo :: Int -> Jogo -> Maybe [Movimento]
 resolveJogo i jogo = undefined
 
+-- | Recebe como argumento uma lista com um único movimento e retorna esse movimento
+devolvemovimento :: [Movimento] -> Movimento
+devolvemovimento [x] = x
 
 -- | Todas as peças com excessão da porta e dos vazio recebem uma coordenada 
 coordenadas :: Coordenadas -> Mapa -> [Coordenadas]
@@ -96,7 +103,9 @@ contaCoordenadas p m = aux2 (0,0) p m
                         where aux2 :: Coordenadas -> Peca -> Mapa -> [Coordenadas]
                               aux2 (x,y) a [] = [] 
                               aux2 (x,y) a ((c:b):h)= (aux1 (x,y) a (c:b)) ++ aux2 (x,y+1) a h
--- | 
+
+
+-- | Devolve a coordenada da porta 
 coordenadaPorta :: Mapa -> Coordenadas
 coordenadaPorta l = aux (contaCoordenadas (Porta) l)
                  where aux :: [Coordenadas ] ->Coordenadas  
@@ -104,10 +113,44 @@ coordenadaPorta l = aux (contaCoordenadas (Porta) l)
                        aux (x:xs)= aux [x]
 
 
+-- | Se o jogador se encontra à direita da porta, retoma a lista de movimentos para que este va para a coluna da porta 
+moveDireita :: Jogo -> [Movimento]
+moveDireita j@(Jogo l(Jogador  (x,y) f g)) |g == False && (checkDireita (x,y) (coordenadasTotalMapa (0,0) l)) ==True && (checkDireita (x,y-1) (coordenadasTotalMapa (0,0)l)) == False = [Trepar]
+                                           |g == True && (checkDireita  (x,y) (coordenadasTotalMapa (0,0) l)) ==True && (checkDireita (x,y-1) (coordenadasTotalMapa (0,0)l)) == False && (checkDireita (x,y-2) (coordenadasTotalMapa (0,0)l)) == False =[Trepar ]
+                                           |g == True && (checkDireita  (x,y) (coordenadasTotalMapa (0,0) l)) ==False && (checkDireita (x,y-1) (coordenadasTotalMapa (0,0)l))== False = [AndarDireita ]
+                                           |g == False && (checkDireita (x,y) (coordenadasTotalMapa (0,0) l)) == False = [AndarDireita ]
+                                           |otherwise =  []
 
 
-bot :: Jogo -> [Movimento]
-bot j@(Jogo l (Jogador (x,y) f g)) |direcao (Jogador (x,y)f g) (coordenadaPorta l) == "ChegouPorta" =[]
+-- | Se o jogador se encontra à esquerda da porta, retoma a lista de movimentos para que este va para a coluna da porta 
+moveEsquerda :: Jogo -> [Movimento]
+moveEsquerda j@(Jogo l(Jogador  (x,y) f g)) |g == False && (checkEsquerda (x,y) (coordenadasTotalMapa (0,0) l)) ==True && (checkEsquerda (x,y-1) (coordenadasTotalMapa (0,0)l)) == False = [Trepar]
+                                            |g == True && (checkEsquerda  (x,y) (coordenadasTotalMapa (0,0) l)) ==True && (checkEsquerda (x,y-1) (coordenadasTotalMapa (0,0)l)) == False && (checkEsquerda (x,y-2) (coordenadasTotalMapa (0,0)l)) == False =[Trepar ]
+                                            |g == True && (checkEsquerda  (x,y) (coordenadasTotalMapa (0,0) l)) ==False && (checkEsquerda (x,y-1) (coordenadasTotalMapa (0,0)l))== False = [AndarEsquerda ]
+                                            |g == False && (checkEsquerda (x,y) (coordenadasTotalMapa (0,0) l)) == False = [AndarEsquerda  ]
+                                            |otherwise = []                                          
+
+bot1 :: Jogo -> [Movimento]
+bot1 j@(Jogo l (Jogador (x,y) f g)) |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "ChegouPorta" =[]
+                                    |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "SegueEsquerda" && moveEsquerda j == [] = []
+                                    |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiDireita" && moveDireita j == [] = []
+                                    |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiDireita" && portaDireitaDiag (Jogador (x,y) f g) (coordenadaPorta l) ==True = [Trepar ]
+                                    |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiEsquerda" && portaEsquerdaDiag (Jogador (x,y) f g )(coordenadaPorta l) ==True  =[Trepar ]
+                                    |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiDireita" && portaDireitaDiag (Jogador (x,y) f g) (coordenadaPorta l) == True =[AndarDireita ]
+                                    |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiEsquerda" && portaEsquerdaDiag (Jogador (x,y) f g) (coordenadaPorta l) ==True = [AndarEsquerda ]
+                                    |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiDireita" = moveDireita j ++ bot1 ()
+
+
+
+moveJogador :: Jogo -> Movimento -> Jogo
+moveJogador (Jogo l (Jogador (a,b) d f)) m | f == False && m == AndarDireita || f == False && m == AndarEsquerda = Jogo l (moveEsquerdaDireita (Jogador (a,b)d f) l m)
+                                           | f == False && m == Trepar = Jogo l (trepaEsquerdaDireita (Jogador (a,b)d f) l m) 
+                                           | f == False && m == InterageCaixa = alteraMapa1 (Jogo l (Jogador (a,b) d f)) m  
+                                           | f == True && m == InterageCaixa = alteraMapa1 (Jogo l (Jogador (a,b) d f)) m 
+                                           | f == True && m == AndarEsquerda || f == True && m == AndarDireita = movercomCaixa (Jogo l (Jogador (a,b) d f)) m
+                                           | f == True && m == Trepar = treparcomCaixa (Jogo l (Jogador (a,b) d f)) m 
+                                           | otherwise = (Jogo l (Jogador (a,b) d f)) 
+
 
 
 

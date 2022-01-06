@@ -26,13 +26,15 @@ data Cred = VMenu
 
 data Mapas = Mapa1 | Mapa2 | Mapa3 | Voltar
 
-data Pause = Voltar2 | Maps 
+data Pause = Continuar | Voltar2 | Maps 
 
 data Controls = Controls 
 
 data Vitoria = IrMenu | VerMapas
 
 data Imagens = Imagens {
+  continuar_azul :: Picture,
+  continuar_laranja :: Picture, 
   venceu :: Picture,
   controls :: Picture,
   como_jogar_azul :: Picture,
@@ -76,6 +78,8 @@ type World = (Menu,Jogo,Imagens)
 -- | Carrega todas as imagens usadas no jogo 
 loadImages :: IO Imagens
 loadImages = do
+   continuar_azulim <- loadBMP "imgs/continuar_azul.bmp"
+   continuar_laranjaim <- loadBMP "imgs/continuar_laranja.bmp"
    venceuim <- loadBMP "imgs/venceu.bmp"
    controlsim <- loadBMP "imgs/controls.bmp"
    como_jogar_azulim <- loadBMP "imgs/como_jogar_azul.bmp"
@@ -110,7 +114,7 @@ loadImages = do
    nivel2_azulim <- loadBMP "imgs/nivel2_azul.bmp"
    nivel3_pretoim <- loadBMP "imgs/nivel3_preto.bmp"
    nivel3_azulim <- loadBMP "imgs/nivel3_azul.bmp"
-   return (Imagens venceuim controlsim como_jogar_azulim como_jogar_laranjaim mapas_pretoim mapas_laranjaim jogador_esteim jogador_oesteim jogador_com_caixa_esteim jogador_com_caixa_oesteim vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
+   return (Imagens continuar_azulim continuar_laranjaim venceuim controlsim como_jogar_azulim como_jogar_laranjaim mapas_pretoim mapas_laranjaim jogador_esteim jogador_oesteim jogador_com_caixa_esteim jogador_com_caixa_oesteim vazioim blocoim caixaim portaim jogadorim jogador_com_caixaim backim blockim dudeim jogar_pretoim jogar_azulim sair_pretoim sair_azulim creditos_azulim creditos_pretoim nomesim menu_pretoim menu_laranjaim nivel1_pretoim nivel1_azulim nivel2_pretoim nivel2_azulim nivel3_pretoim nivel3_azulim)
 
 
 -- | A janela do jogo vai ocupar todo o ecrã
