@@ -10,12 +10,12 @@ module Tarefa4_2021li1g029 where
 
 import LI12122
 
--- | Altera um jogo quando lh é aplicado um movimento 
+-- | Altera um jogo quando lhe é aplicado um movimento 
 moveJogador :: Jogo -> Movimento -> Jogo 
 moveJogador (Jogo mapa (Jogador (x,y) dir b)) m | m == AndarEsquerda && dir == Este = (Jogo mapa (Jogador (x,y) Oeste b))                                                       -- vira para oeste
-                                                | m == AndarEsquerda && dir == Oeste = (Jogo mapa (moveparaEsquerda (Jogador (x,y) Oeste b) mapa AndarEsquerda))                -- anda para oeste
+                                                | m == AndarEsquerda && dir == Oeste = (Jogo mapa(naoFlutua (moveparaEsquerda (Jogador (x,y) Oeste b) mapa AndarEsquerda) mapa))                -- anda para oeste
                                                 | m == AndarDireita && dir == Oeste = (Jogo mapa (Jogador (x,y) Este b))                                                        -- vira para este
-                                                | m == AndarDireita && dir == Este = (Jogo mapa (moveparaDireita (Jogador (x,y) Este b) mapa AndarDireita))                -- anda para este
+                                                | m == AndarDireita && dir == Este = (Jogo mapa (naoFlutua (moveparaDireita (Jogador (x,y) Este b) mapa AndarDireita) mapa))                -- anda para este
                                                 | m == Trepar && dir == Oeste = (Jogo mapa (treparEsquerda (Jogador (x,y) Oeste b) mapa Trepar))                     -- trepa virado para oeste
                                                 | m == Trepar && dir == Este = (Jogo mapa (treparDireita (Jogador (x,y) Este b) mapa Trepar))                       -- trepa virado para este
                                                 | m == InterageCaixa && dir == Este && b == False = (Jogo mapa (Jogador (x,y) Este True))   -- pega na caixa virado para este
@@ -27,6 +27,41 @@ moveJogador (Jogo mapa (Jogador (x,y) dir b)) m | m == AndarEsquerda && dir == E
 correrMovimentos :: Jogo -> [Movimento] -> Jogo
 correrMovimentos (Jogo l (Jogador (a,b) d f)) [] = Jogo l (Jogador (a,b) d f)
 correrMovimentos (Jogo l (Jogador (a,b) d f)) (m:ms) = correrMovimentos (moveJogador (Jogo l (Jogador (a,b) d f)) m) ms 
+
+
+-- | Verifica se o jogador está em cima de algo / não flutua
+existeBase :: Coordenadas -> [Coordenadas] -> Bool
+existeBase (x,y) [] = False
+existeBase (x,y) ((a,b):c) | x == a && y == b-1 = True 
+                           | otherwise = existeBase (x,y) c
+
+
+-- | Retorna as coordenadas das pecas com a mesma abcissa
+coordsColuna :: Coordenadas -> [Coordenadas] -> [Coordenadas] 
+coordsColuna (x,y) [] = []
+coordsColuna (x,y) ((a,b):c) | x == a = (a,b) : coordsColuna (x,y) c
+                             | otherwise = coordsColuna (x,y) c 
+
+
+-- | Devolve as coordenadas das pecas por baixo do jogador 
+coordsInf :: Coordenadas -> [Coordenadas] -> [Coordenadas] 
+coordsInf (x,y) [] = []
+coordsInf (x,y)  ((a,b):c) | y >= b = coordsInf (x,y) c
+                           | otherwise = (a,b) : coordsInf (x,y) c
+
+
+-- | Devolve a coordenada com menor ordenada da coluna
+chao :: [Coordenadas] -> Coordenadas
+chao [(x,y)] = (x,y)
+chao ((x,y):(a,b):c) | y < b = chao ((x,y):c)  
+                     | otherwise = chao ((a,b):c)
+
+
+naoFlutua :: Jogador -> Mapa -> Jogador
+naoFlutua j@(Jogador (a,b) d f) l@((x:xs):y) = aux (chao (coordsInf (a,b) (coordsColuna (a,b) (coordenadasTotalMapa (0,0) l)))) (existeBase (a,b) (coordenadasTotalMapa (0,0) l)) j 
+                                            where aux :: Coordenadas -> Bool -> Jogador -> Jogador
+                                                  aux (x,y) e (Jogador (a,b) d c) | e == True = (Jogador (a,b) d c)
+                                                                                  | otherwise = (Jogador (a,y-1) d c)
 
 
 -- | Atribui coordenadas às caixas e blocos. As portas e vazios são ignorados 
@@ -166,3 +201,21 @@ intergeCaixaEsquerda j@(Jogador (a,b) d f) l m = aux (checkCaixaEsquerda (a,b) (
                                           where aux :: Bool -> Jogador -> Movimento -> Bool -> Jogador
                                                 aux r j@(Jogador (a,b) d h) m l | h == False && m == InterageCaixa && r == True && l == False = (Jogador (a,b) d True)   
                                                                                 | otherwise = j
+
+
+-- | Faz o jogador largar a caixa. O bool corresponde ao resultado de checkDireita e checkEsquerda (se existem obstaculos)
+largaCaixa :: Bool -> Jogador -> Movimento -> Jogador
+largaCaixa b j@(Jogador (x,y) d c) m | c == True && b == False = (Jogador (x,y) d False)
+                                     | otherwise = j 
+
+
+-- | O jogador larga a caixa orientado para a direita, se não existir obstaculos 
+largaCaixaDireita :: Jogador -> Mapa -> Movimento -> Jogador
+largaCaixaDireita j@(Jogador (a,b) d f) l m = largaCaixa (checkDireita (a,b) (coordenadasTotalMapa (0,0) l)) j m 
+
+
+-- | O jogador larga a caixa orientado para a esquerda, se não existir obstaculos
+largaEsquerda :: Jogador -> Mapa -> Movimento -> Jogador
+largaEsquerda j@(Jogador (a,b) d f) l m = largaCaixa (checkEsquerda (a,b) (coordenadasTotalMapa (0,0) l)) j m 
+
+
