@@ -130,7 +130,7 @@ moveEsquerda j@(Jogo l(Jogador  (x,y) f g)) |g == False && (checkEsquerda (x,y) 
                                             |g == True && (checkEsquerda  (x,y) (coordenadasTotalMapa (0,0) l)) ==False && (checkEsquerda (x,y-1) (coordenadasTotalMapa (0,0)l))== False = [AndarEsquerda ]
                                             |g == False && (checkEsquerda (x,y) (coordenadasTotalMapa (0,0) l)) == False = [AndarEsquerda  ]
                                             |otherwise = []                                          
-
+{-
 bot1 :: Jogo -> [Movimento]
 bot1 j@(Jogo l (Jogador (x,y) f g)) |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "ChegouPorta" =[]
                                     |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "SegueEsquerda" && moveEsquerda j == [] = []
@@ -153,7 +153,7 @@ moveJogador (Jogo l (Jogador (a,b) d f)) m | f == False && m == AndarDireita || 
                                            | f == True && m == AndarEsquerda || f == True && m == AndarDireita = movercomCaixa (Jogo l (Jogador (a,b) d f)) m
                                            | f == True && m == Trepar = treparcomCaixa (Jogo l (Jogador (a,b) d f)) m 
                                            | otherwise = (Jogo l (Jogador (a,b) d f)) 
-
+-}
 
 
 
