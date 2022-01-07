@@ -67,12 +67,12 @@ naoFlutua j@(Jogador (a,b) d f) l@((x:xs):y) = aux (chao (coordsInf (a,b) (coord
 -- | Atribui coordenadas às caixas e blocos. As portas e vazios são ignorados 
 coordenadasTotalMapa :: Coordenadas -> Mapa -> [Coordenadas]
 coordenadasTotalMapa (x,y) [] = []
-coordenadasTotalMapa (x,y) (a:b) = aux (x,y) a ++ coordenadasTotalMapa (0,y+1) b
+coordenadasTotalMapa (x,y) (a:b) = coordsLinha (x,y) a ++ coordenadasTotalMapa (0,y+1) b
                                
-                               where aux :: Coordenadas -> [Peca] -> [Coordenadas]
-                                     aux (x,y) [] = []
-                                     aux (x,y) (a:b) | a == Vazio || a == Porta = aux (x+1,y) b 
-                                                     | otherwise = (x,y) : aux (x+1,y) b 
+                               where coordsLinha :: Coordenadas -> [Peca] -> [Coordenadas]
+                                     coordsLinha (x,y) [] = []
+                                     coordsLinha (x,y) (a:b) | a == Vazio || a == Porta = coordsLinha (x+1,y) b 
+                                                             | otherwise = (x,y) : coordsLinha (x+1,y) b 
 
 
 -- | Marca o fim do mapa à direita. À esquerda será x = 0
@@ -166,9 +166,9 @@ treparEsquerda j@(Jogador (a,b) d f) l m = aux (podeTrepar (muroEsquerda j) (coo
 -- | Devolve uma lista com as coordenadas das caixas
 coordenadasCaixaMapa :: Coordenadas -> Mapa -> [Coordenadas]
 coordenadasCaixaMapa (x,y) [] = []
-coordenadasCaixaMapa (x,y) (z:zs) = coordenadasCaixa (x,y) z ++ coordenadasCaixaMapa (0,y+1) zs
-                                  where coordenadasCaixa (x,y) [] = []
-                                        coordenadasCaixa (x,y) (h:t) | h == Caixa = (x,y) : coordenadasCaixa (x+1,y) t 
+coordenadasCaixaMapa (x,y) (z:zs) = coordenadasCaixaLinha (x,y) z ++ coordenadasCaixaMapa (0,y+1) zs
+                                  where coordenadasCaixaLinha (x,y) [] = []
+                                        coordenadasCaixaLinha (x,y) (h:t) | h == Caixa = (x,y) : coordenadasCaixaLinha (x+1,y) t 
 
 
 -- | Verifica se existe uma caixa à esquerda 
@@ -185,7 +185,7 @@ checkCaixaDireita (x,y) ((a,b):c) | x == a+1 && y == b = True
                                   | otherwise = checkCaixaEsquerda (x,y) c
 
 
--- | O jogador interage com a caixa à sua direita se possivel 
+-- | O jogador levanta a caixa à sua direita se possivel 
 intergeCaixaDireita :: Jogador -> Mapa -> Movimento -> Jogador
 intergeCaixaDireita j@(Jogador (a,b) d f) l m = aux (checkCaixaDireita (a,b) (coordenadasCaixaMapa (0,0) l)) j m (podeTrepar (a,b) (coordenadasTotalMapa (0,0) l))
                                           
@@ -194,7 +194,7 @@ intergeCaixaDireita j@(Jogador (a,b) d f) l m = aux (checkCaixaDireita (a,b) (co
                                                                                 | otherwise = j
 
 
--- | O jogador interage com a caixa à sua esquerda se possível 
+-- | O jogador levanta  caixa à sua esquerda se possível 
 intergeCaixaEsquerda :: Jogador -> Mapa -> Movimento -> Jogador
 intergeCaixaEsquerda j@(Jogador (a,b) d f) l m = aux (checkCaixaEsquerda (a,b) (coordenadasCaixaMapa (0,0) l)) j m (podeTrepar (a,b) (coordenadasTotalMapa (0,0) l))
                                           

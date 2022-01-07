@@ -191,7 +191,7 @@ drawMenu pic = Translate 100 (-290) $ Scale 0.8 0.8 pic
 
 -- | desenha a opção "menu" que se situa nos menus de pausa e vitoria
 drawMenuPause ::  Picture -> Picture
-drawMenuPause pic = Translate 100 (-80) $ Scale 1 1 pic
+drawMenuPause pic = Translate 103 (-80) $ Scale 1 1 pic
 
 -- | desenha a opção "mapas" que se situa nos menus de pausa e vitoria
 drawMapas :: Picture -> Picture
