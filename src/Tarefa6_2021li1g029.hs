@@ -9,6 +9,7 @@ Módulo para a realização da Tarefa 6 do projeto de LI1 em 2021/22.
 module Tarefa6_2021li1g029 where
 
 import LI12122
+import Tarefa5_2021li1g029
 import Tarefa4_2021li1g029
 import Tarefa3_2021li1g029
 import Tarefa2_2021li1g029
@@ -93,16 +94,16 @@ damovimento j@( Jogador (x,y)f g) (a,b) |direcao j (a,b) == "SegueDireita" =Anda
                                         |direcao j (a,b) == "SegueEsquerda" = AndarEsquerda
                                         |otherwise = Trepar
 
-aux1 :: Coordenadas -> Peca -> [Peca ] -> [Coordenadas]      
-aux1 (x,y) a [] = []
-aux1 (x,y) a (b:bs) | a == b = (x,y) :aux1 (x+1,y) a bs    
-                    |otherwise = aux1 (x+1,y) a bs                        
+aux3 :: Coordenadas -> Peca -> [Peca ] -> [Coordenadas]      
+aux3 (x,y) a [] = []
+aux3 (x,y) a (b:bs) | a == b = (x,y) :aux3 (x+1,y) a bs    
+                    |otherwise = aux3 (x+1,y) a bs                        
 
 contaCoordenadas :: Peca  -> Mapa -> [Coordenadas ]
 contaCoordenadas p m = aux2 (0,0) p m
                         where aux2 :: Coordenadas -> Peca -> Mapa -> [Coordenadas]
                               aux2 (x,y) a [] = [] 
-                              aux2 (x,y) a ((c:b):h)= (aux1 (x,y) a (c:b)) ++ aux2 (x,y+1) a h
+                              aux2 (x,y) a ((c:b):h)= (aux3 (x,y) a (c:b)) ++ aux2 (x,y+1) a h
 
 
 -- | Devolve a coordenada da porta 
@@ -138,7 +139,9 @@ bot1 j@(Jogo l (Jogador (x,y) f g)) |direcao (Jogador (x,y) f g) (coordenadaPort
                                     |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiEsquerda" && portaEsquerdaDiag (Jogador (x,y) f g )(coordenadaPorta l) ==True  =[Trepar ]
                                     |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiDireita" && portaDireitaDiag (Jogador (x,y) f g) (coordenadaPorta l) == True =[AndarDireita ]
                                     |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiEsquerda" && portaEsquerdaDiag (Jogador (x,y) f g) (coordenadaPorta l) ==True = [AndarEsquerda ]
-                                    |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiDireita" = moveDireita j ++ bot1 ()
+                                    |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiDireita" = moveDireita j ++ bot1 (moveJogador j (devolvemovimento(moveDireita j)))
+                                    |direcao (Jogador (x,y) f g) (coordenadaPorta l) == "VaiEsquerda" = moveEsquerda j ++ bot1 (moveJogador j (devolvemovimento(moveEsquerda j)))
+                                    |otherwise  = []
 
 
 
