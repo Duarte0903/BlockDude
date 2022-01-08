@@ -17,21 +17,28 @@ import Graphics.Gloss.Interface.Pure.Game
 
 
 
-
+-- | Diferentes menus do jogo
 data Menu = Controlador Opcoes | Modojogo Jogo | VenceuJogo Vitoria | Modocred Cred | ModoMap Mapas | MenuPause Pause | ControlsMenu Controls
  
-data Opcoes = Jogar | Creditos | Sair | ComoJogar
+-- | opções do menu principal 
+data Opcoes = Jogar | Creditos | Sair | ComoJogar  
 
-data Cred = VMenu
+-- | opção voltar ao menu principal nos creditos
+data Cred = Menu2   
 
-data Mapas = Mapa1 | Mapa2 | Mapa3 | Voltar
+-- | 3 mapas possiveis no menu dos mapas e voltar ao menu principal
+data Mapas = Mapa1 | Mapa2 | Mapa3 | Voltar  
 
-data Pause = Continuar | Voltar2 | Maps 
+-- | opções do menu de pausa (continuar não está funcional)
+data Pause = Continuar | Voltar2 | Maps   
 
-data Controls = Controls 
+-- | opção de voltar ao menu principal no menu "como jogar ?"
+data Controls = Menu3
 
-data Vitoria = IrMenu | VerMapas
+-- | opções de voltar para o menu principal ou para a seleção de mapas depois de vencer o jogo
+data Vitoria = IrMenu | VerMapas  
 
+-- | imagens usadas no jogo
 data Imagens = Imagens {
   continuar_azul :: Picture,
   continuar_laranja :: Picture, 
@@ -72,6 +79,7 @@ data Imagens = Imagens {
   }
 
 
+-- | COnstituição de um world
 type World = (Menu,Jogo,Imagens)
 
 
@@ -134,8 +142,8 @@ draw (Controlador Jogar, jogo, imgs) = Pictures [background imgs, drawJogar $ jo
 draw (Controlador Creditos, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_preto imgs, drawCreditos $ creditos_azul imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_laranja imgs]
 draw (Controlador Sair, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_zaul imgs,drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_laranja imgs]
 draw (Controlador ComoJogar, jogo, imgs) = Pictures [background imgs, drawJogar $ jogar_preto imgs,  drawSair $ sair_preto imgs,drawCreditos $ creditos_preto imgs, drawBlock $ block imgs, drawDude $ dude imgs, drawComoJogar $ como_jogar_azul imgs]
-draw (Modocred VMenu, jogo, imgs) = Pictures [background imgs, drawNomes $ nomes imgs, drawMenu $ menu_laranja imgs]
-draw (ControlsMenu Controls, jogo, imgs) = Pictures [background imgs, drawControls $ controls imgs, drawMenu $ menu_laranja imgs]
+draw (Modocred Menu2, jogo, imgs) = Pictures [background imgs, drawNomes $ nomes imgs, drawMenu $ menu_laranja imgs]
+draw (ControlsMenu Menu3, jogo, imgs) = Pictures [background imgs, drawControls $ controls imgs, drawMenu $ menu_laranja imgs]
 draw (ModoMap Mapa1, jogo, imgs) = Pictures [background imgs, drawNivel1 $ nivel1_azul imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Mapa2, jogo, imgs) = Pictures [background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_azul imgs, drawNivel3 $ nivel3_preto imgs, drawMenu $ menu_preto imgs]
 draw (ModoMap Mapa3, jogo, imgs) = Pictures [background imgs, drawNivel1 $ nivel1_preto imgs, drawNivel2 $ nivel2_preto imgs, drawNivel3 $ nivel3_azul imgs, drawMenu $ menu_preto imgs]
@@ -267,10 +275,10 @@ event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador Creditos, jogo, imgs
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador Creditos, jogo, imgs) = (Controlador Sair, jogo, imgs)
 event (EventKey (SpecialKey KeyUp) Down _ _) (Controlador ComoJogar, jogo, imgs) = (Controlador Creditos, jogo, imgs)
 event (EventKey (SpecialKey KeyDown) Down _ _) (Controlador ComoJogar, jogo, imgs) = (Controlador Jogar, jogo, imgs)
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador ComoJogar, jogo, imgs) = (ControlsMenu Controls, jogo, imgs)   -- como jogar 
-event (EventKey (SpecialKey KeyEnter) Down _ _) (ControlsMenu Controls, jogo, imgs) = (Controlador Jogar, jogo, imgs)       -- como jogar -> menu principal
-event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Creditos, jogo, imgs) = (Modocred VMenu, jogo, imgs)           -- ver creditos
-event (EventKey (SpecialKey KeyEnter) Down _ _ ) (Modocred VMenu, jogo, imgs) = (Controlador Jogar, jogo, imgs)             -- creditos -> menu principal 
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador ComoJogar, jogo, imgs) = (ControlsMenu Menu3, jogo, imgs)      -- como jogar 
+event (EventKey (SpecialKey KeyEnter) Down _ _) (ControlsMenu Menu3, jogo, imgs) = (Controlador Jogar, jogo, imgs)          -- como jogar -> menu principal
+event (EventKey (SpecialKey KeyEnter) Down _ _) (Controlador Creditos, jogo, imgs) = (Modocred Menu2, jogo, imgs)           -- ver creditos
+event (EventKey (SpecialKey KeyEnter) Down _ _ ) (Modocred Menu2, jogo, imgs) = (Controlador Jogar, jogo, imgs)             -- creditos -> menu principal 
 event (EventKey (SpecialKey KeyDown) Down _ _ ) (ModoMap Mapa1, jogo, imgs) = (ModoMap Mapa2, jogo, imgs)
 event (EventKey (SpecialKey KeyDown) Down _ _ ) (ModoMap Mapa2, jogo, imgs) = (ModoMap Mapa3, jogo, imgs)
 event (EventKey (SpecialKey KeyDown) Down _ _ ) (ModoMap Mapa3, jogo, imgs) = (ModoMap Voltar, jogo, imgs)
